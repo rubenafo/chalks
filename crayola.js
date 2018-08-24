@@ -9,7 +9,24 @@ class Custom {
   }
 
   addElem (f, attrs) {
-    let color = attrs["color"]
+    let strokeColor = attrs["stroke"]
+    let alpha = attrs["alpha"]
+    if (color && alpha) {
+      if (typeof(strokeColor) === "string") {
+        c = color(strokeColor)
+        c.setAlpha(alpha)
+        stroke(c)
+      }
+      else {
+        if (typeof(strokeColor) === "object") {
+          strokeColor.setAlpha(alpha)
+          stroke(strokeColor)
+        }
+      }
+      //eval("stroke(" + c + ")")
+      delete(attrs["stroke"])
+      delete(attrs["alpha"])
+    }
     for (let key in attrs) {
       let val = attrs[key]
       if (val == true) {

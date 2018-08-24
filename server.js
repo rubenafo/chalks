@@ -15,12 +15,12 @@ console.log('Server started on port 8080');
 function handleRequest(req, res) {
   // What did we request?
   var pathname = req.url;
-  
+
   // If blank let's ask for index.html
   if (pathname == '/') {
     pathname = '/index.html';
   }
-  
+
   // Ok what's our file extension
   var ext = path.extname(pathname);
 
