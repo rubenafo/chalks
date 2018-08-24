@@ -9,32 +9,14 @@ class Custom {
   }
 
   addElem (f, attrs) {
-    let strokeColor = attrs["stroke"]
-    let alpha = attrs["alpha"]
-    if (color && alpha) {
-      if (typeof(strokeColor) === "string") {
-        c = color(strokeColor)
-        c.setAlpha(alpha)
-        stroke(c)
-      }
-      else {
-        if (typeof(strokeColor) === "object") {
-          strokeColor.setAlpha(alpha)
-          stroke(strokeColor)
-        }
-      }
-      //eval("stroke(" + c + ")")
-      delete(attrs["stroke"])
-      delete(attrs["alpha"])
-    }
-    for (let key in attrs) {
-      let val = attrs[key]
-      if (val == true) {
-        eval(key + "()")
-      } else {
-        eval(key + "('" + attrs[key] + "')")
-      }
-    }
+    let strokeAttr = attrs["stroke"]
+    let alphaAttr = attrs["alpha"]
+    let strokeWeightAttr = attrs["strokeWidth"]
+    if (strokeWeightAttr)
+      strokeWeight(strokeWeightAttr)
+    if (typeof(strokeAttr) === "object" && alphaAttr)
+      strokeAttr.setAlpha(alphaAttr)
+    stroke(strokeAttr)
     f()
   }
 
@@ -50,12 +32,21 @@ class Custom {
     return function () { point (params.x, params.y)}
   }
 
+  rint (lower, upper) {
+    return Math.round(random(lower, upper));
+  }
+
   rnd (start, end) {
+    if (Array.isArray(start)) {
+      return start[this.rint(0,start.length-1)]
+    }
+    let val = 0
     if (start && end)
-      return random(start,end)
-    if (start !== undefined)
-      return random(0, start)
-    return random(0,1)
+      val = random(start,end)
+    else if (start !== undefined)
+      val = random(0, start)
+      else val =  random(0,1)
+    return val
   }
 
   stopAt (countLimit) {
