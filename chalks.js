@@ -1,5 +1,5 @@
 
-class Custom {
+class Chalks {
 
   constructor (params) {
     this.canvas = createCanvas(params.width, params.height)
@@ -24,8 +24,8 @@ class Custom {
     return function () { rect(params.x, params.y, params.width, params.height) }
   }
 
-  line (params) {
-    return function () { line(params.x1, params.y1, params.x2, params.y2) }
+  line (p0, p1) {
+    return function () { line(p0.x, p0.y, p1.x, p1.y) }
   }
 
   point(params) {

@@ -1,7 +1,7 @@
 {
-  "name": "crayonite",
+  "name": "chalks",
   "version": "0.5",
-  "description": "Tools on top of p5js",
+  "description": "A set of handy tools on top of p5js",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,12 +9,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rubenafo/crayonite.git"
+    "url": "git+https://github.com/rubenafo/chalks.git"
   },
   "keywords": [
     "p5js",
     "generative",
     "art",
+    "processing",
     "design",
     "javascript",
     "nodejs"
@@ -22,7 +23,7 @@
   "author": "Ruben Afonso",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/rubenafo/crayonite/issues"
+    "url": "https://github.com/rubenafo/chalks/issues"
   },
-  "homepage": "https://github.com/rubenafo/crayonite#readme"
+  "homepage": "https://github.com/rubenafo/chalks#readme"
 }
