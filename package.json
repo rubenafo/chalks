@@ -1,11 +1,12 @@
 {
   "name": "chalks",
-  "version": "0.5",
+  "version": "0.0.5",
   "description": "A set of handy tools on top of p5js",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "browserify ./src/chalks.js -o chalks.min.js --standalone chalks"
   },
   "repository": {
     "type": "git",
@@ -25,5 +26,8 @@
   "bugs": {
     "url": "https://github.com/rubenafo/chalks/issues"
   },
-  "homepage": "https://github.com/rubenafo/chalks#readme"
+  "homepage": "https://github.com/rubenafo/chalks#readme",
+  "dependencies": {
+    "browserify": "^16.2.2"
+  }
 }

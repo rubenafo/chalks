@@ -1,11 +1,14 @@
 
-class Chalks {
+let attrs = require ("./Parametrics.js")
+
+class chalks {
 
   constructor (params) {
     this.canvas = createCanvas(params.width, params.height)
     background(params.background);
     randomSeed(params.seed || 3)
     this.startTime = Date.now()
+    this.attractors = attrs
   }
 
   addElem (f, attrs) {
@@ -58,3 +61,5 @@ class Chalks {
     }
   }
 }
+
+module.exports = chalks
