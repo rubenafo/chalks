@@ -15,7 +15,7 @@ class Parametrics {
    * @param {number} loops  - number of loops to iterate
    * @param {number} lambda - lambda parameter of the curve
    */
-  static ButterflyCurve(origin, scale, loops, lambda) {
+  static butterflyCurve(origin, scale, loops, lambda) {
     let points = [];
     let stepSize = 0.025;
     let upperLimit = loops * Math.PI;
@@ -38,7 +38,7 @@ class Parametrics {
    * @param {number} R      - major circle radio
    * @param {number} loops  - number of loops to iterate
    */
-  static Hypocycloid(origin, scale, loops, r, R) {
+  static hypocycloid(origin, scale, loops, r, R) {
     let points = [];
     let stepSize = 0.025;
     let upperLimit = loops * Math.PI;
@@ -57,7 +57,7 @@ class Parametrics {
    * @param {number} k      - k factor of the Rose curve (n/d)
    * @param {number} loops  - number of loops to iterate
    */
-  static Rose(origin, scale, loops, k) {
+  static rose(origin, scale, loops, k) {
     let points = [];
     let stepSize = 0.025;
     let upperLimit = loops * Math.PI;
@@ -83,7 +83,7 @@ class Parametrics {
    *  Rossler Attractor code.
    *  http://paulbourke.net/fractals/rossler/
    */
-  static Rossler(origin, scale, loops, a, b, c, h) {
+  static rossler(origin, scale, loops, a, b, c, h) {
     function rosslerPoint(x, y, z, a, b, c) {
       let dx = -(y + z);
       let dy = x + a * y;
@@ -138,7 +138,7 @@ class Parametrics {
     Lorentz Attractor code.
     http://www.algosome.com/articles/lorenz-attractor-programming-code.html
   */
- static Lorentz(origin, scale, loops, x, y, z, a, b, c, h) {
+ static lorentz(origin, scale, loops, x, y, z, a, b, c, h) {
     function lorentzPoint(x, y, z, a, b, c) {
       let dx = a * (y - x);
       let dy = x * (b - z) - y;
@@ -179,7 +179,7 @@ class Parametrics {
    * @param {string} entryString initial configuration string
    * @return a list of xy points
    */
-  static Attractor(origin, loops, entryString) {
+  static attractor(origin, loops, entryString) {
     // Fractal pattern and coefficients.
     let a = [];
     let points = [];
