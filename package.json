@@ -1,6 +1,6 @@
 {
   "name": "chalks",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "A set of handy tools on top of p5js",
   "main": "server.js",
   "scripts": {
