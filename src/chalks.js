@@ -1,5 +1,7 @@
 
-let attractors = require("./Parametrics.js")
+let attractors = require("./Parametrics")
+let layout = require ("./Layout")
+let points = require ("./Points")
 
 class chalks {
 
@@ -9,16 +11,24 @@ class chalks {
     randomSeed(params.seed || 3)
     this.startTime = Date.now()
     this.attractors = attractors
+    this.layout = layout
+    this.Points = points
   }
 
   addElem(f, attrs) {
     let strokeAttr = attrs["stroke"]
     let alphaAttr = attrs["alpha"]
     let strokeWeightAttr = attrs["strokeWidth"]
+    let noFillAttr = attrs["noFill"]
     if (strokeWeightAttr)
       strokeWeight(strokeWeightAttr)
+    if (typeof(strokeAttr) === "string")
+      strokeAttr = color(strokeAttr)
     if (typeof (strokeAttr) === "object" && alphaAttr)
       strokeAttr.setAlpha(alphaAttr)
+    if (noFillAttr !== "undefined" && noFillAttr) {
+      noFill();
+    }
     stroke(strokeAttr)
     f()
   }
@@ -36,6 +46,16 @@ class chalks {
       beginShape()
       pts.forEach (p => vertex(p.x, p.y))
       closed? endShape (CLOSE) : endShape()
+    }
+  }
+
+  curveVertex (pts) {
+    return function () {
+      beginShape()
+      curveVertex(pts[0].x, pts[0].y)
+      pts.forEach (p => curveVertex(p.x, p.y))
+      curveVertex(pts[pts.length-1].x, pts[pts.length-1].y)
+      endShape()
     }
   }
 

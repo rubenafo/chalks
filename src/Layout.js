@@ -6,9 +6,6 @@
 
 "use strict";
 
-let Rnd = require ("./Rnd.js").Rnd;
-let Masonry = require ("./Masonry.js").Masonry;
-
 /**
  * @classdesc This module contains functions to generate layout points
  * @class
