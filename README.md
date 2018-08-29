@@ -1,14 +1,19 @@
 # Chalks
-A library containing methods to manipulate points and draw on top of p5js
+A library containing methods to manipulate points and draw on top of p5js.
 
-Chalks is fully compatible with p5js and just provides some handy tools on top
-to simplify the drawing process.
+Chalks is fully compatible with p5js and just provides some handy tools to simplify the creation process.
 
-Example
-`
+Some of the components:
+* Random methods: random int, random array element, seed
+* Attractors
+* Points manipulation (subidivide, subchunks)
+* Layout: column points, row points
+
+## Example
+```javascript
 function setup() {
     ch = new chalks({width: 1000, height: 1000, seed:4, background:215})
-    points = ch.attractors.dejon([500,650], -2.24, 0.43, -0.66, -8.23, 250, 3200)
+    points = ch.attractors.dejon([500,550], -2.24, 0.43, -3.66, -8.23, 250, 3200)
 }
 
 function draw() {
@@ -20,4 +25,11 @@ function draw() {
     }
     ch.stopAt(1)
 }
-`
+```
+## Installation
+Copy the file _chalks.min.js_ from this repository and add it to your _index.html_ after your p5js import.
+
+```html
+ <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.js"></script>
+ <script language="javascript" src="./chalks.min.js" type="text/javascript"></script>
+```
