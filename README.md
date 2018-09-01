@@ -4,8 +4,16 @@ A library containing methods to manipulate points and draw on top of p5js.
 Chalks is fully compatible with p5js and just provides some handy tools to simplify the creation process.
 
 Some of the components:
-* Random methods: random int, random array element, seed
+* Added native functions:
+    * rint : random integers
+    * rnd : random value in interval, random value, random list element
 * Attractors
+    * butterfly curve
+    * hypocycloid
+    * rose
+    * rossler
+    * lorentz
+    * dejon
 * Points manipulation (subidivide, subchunks)
 * Layout: column points, row points
 
@@ -21,7 +29,7 @@ function draw() {
       p0 = points[i-1]
       p1 = points[i]
       ch.addElem(ch.line(p0, p1),
-                    {stroke:color(ch.rnd(["black","white"])), alpha:ch.rnd(12,52), strokeWidth:ch.rnd(2,4)})
+                    {stroke:color(rnd(["black","white"])), alpha:rnd(12,52), strokeWidth:rnd(2,4)})
     }
     ch.stopAt(1)
 }

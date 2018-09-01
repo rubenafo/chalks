@@ -1,14 +1,20 @@
 
 let attractors = require("./Parametrics")
-let layout = require ("./Layout")
-let points = require ("./Points")
+let layout = require("./Layout")
+let points = require("./Points")
 
 class chalks {
 
   constructor(params) {
     this.canvas = createCanvas(params.width, params.height)
     background(params.background);
-    randomSeed(params.seed || 3)
+    if (params.seed)
+      randomSeed(params.seed)
+    else {
+      let seed = (Math.random()*10000).toString().substr(5,11)
+      console.log ("Using seed: " + seed)
+      randomSeed(seed)
+    }
     this.startTime = Date.now()
     this.attractors = attractors
     this.layout = layout
@@ -22,7 +28,7 @@ class chalks {
     let noFillAttr = attrs["noFill"]
     if (strokeWeightAttr)
       strokeWeight(strokeWeightAttr)
-    if (typeof(strokeAttr) === "string")
+    if (typeof (strokeAttr) === "string")
       strokeAttr = color(strokeAttr)
     if (typeof (strokeAttr) === "object" && alphaAttr)
       strokeAttr.setAlpha(alphaAttr)
@@ -39,37 +45,23 @@ class chalks {
 
   point(ats) { return function () { point(ats.x, ats.y) } }
 
-  rint(lower, upper) { return Math.round(random(lower, upper)) }
 
-  shape (pts, closed=true) {
+  shape(pts, closed = true) {
     return function () {
       beginShape()
-      pts.forEach (p => vertex(p.x, p.y))
-      closed? endShape (CLOSE) : endShape()
+      pts.forEach(p => vertex(p.x, p.y))
+      closed ? endShape(CLOSE) : endShape()
     }
   }
 
-  curveVertex (pts) {
+  curveVertex(pts) {
     return function () {
       beginShape()
       curveVertex(pts[0].x, pts[0].y)
-      pts.forEach (p => curveVertex(p.x, p.y))
-      curveVertex(pts[pts.length-1].x, pts[pts.length-1].y)
+      pts.forEach(p => curveVertex(p.x, p.y))
+      curveVertex(pts[pts.length - 1].x, pts[pts.length - 1].y)
       endShape()
     }
-  }
-
-  rnd(start, end) {
-    if (Array.isArray(start)) {
-      return start[this.rint(0, start.length - 1)]
-    }
-    let val = 0
-    if (start && end)
-      val = random(start, end)
-    else if (start !== undefined)
-      val = random(0, start)
-    else val = random(0, 1)
-    return val
   }
 
   stopAt(countLimit, saveToFile) {
@@ -83,6 +75,32 @@ class chalks {
       noLoop()
     }
   }
+}
+
+p5.prototype.rint = function (lower, upper) {
+  return Math.round(random(lower, upper))
+}
+
+p5.prototype.rnd = function (start, end) {
+  if (Array.isArray(start)) {
+    return start[rint(0, start.length - 1)]
+  }
+  let val = 0
+  if (start && end)
+    val = random(start, end)
+  else if (start !== undefined)
+    val = random(0, start)
+  else val = random(0, 1)
+  return val
+}
+
+p5.prototype.rscale = function (scaleStart, scaleEnd, inputStart, inputEnd, value) {
+  let distance = scaleEnd - scaleStart
+  let step = (value - inputStart) / (inputEnd - inputStart)
+  let returnVal = scaleStart + (distance * step)
+  returnVal = Math.max(returnVal, scaleStart)
+  returnVal = Math.min(returnVal, scaleEnd)
+  return returnVal
 }
 
 module.exports = chalks

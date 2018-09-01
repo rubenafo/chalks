@@ -20,8 +20,8 @@ class Points {
     }
 
     static rslice (points, minSize, maxSize) {
-        let start = Math.round(Math.random() * points.length)
-        let end = start + Math.round((maxSize - minSize) * Math.random() + minSize)
+        let start = Math.round(random() * points.length)
+        let end = start + Math.round((maxSize - minSize) * random() + minSize)
         return points.slice(start, end)
     }
 }
