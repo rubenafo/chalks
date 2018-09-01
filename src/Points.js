@@ -6,7 +6,7 @@ class Points {
     static subd (points, level=1) {
         let result = []
         for (let i = 1; i < points.length; i++) {
-            result.push (points[i-1], 
+            result.push (points[i-1],
                         {x:(points[i-1].x + points[i].x)/2, y:(points[i-1].y + points[i].y)/2})
         }
         result.push(points[points.length-1])
@@ -23,6 +23,11 @@ class Points {
         let start = Math.round(random() * points.length)
         let end = start + Math.round((maxSize - minSize) * random() + minSize)
         return points.slice(start, end)
+    }
+
+    static noise (points, val) {
+      let f = function (p) { return {x:p.x + random()*val, y:p.y + random()*val}}
+      return points.map(f)
     }
 }
 

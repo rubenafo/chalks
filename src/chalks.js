@@ -7,18 +7,24 @@ class chalks {
 
   constructor(params) {
     this.canvas = createCanvas(params.width, params.height)
-    background(params.background);
+    params.background = params.background || 1
+    if (typeof (params.background) === "string") {
+      background(color(params.background))
+    }
+    else {
+      background(params.background);
+    }
     if (params.seed)
       randomSeed(params.seed)
     else {
-      let seed = (Math.random()*10000).toString().substr(5,11)
-      console.log ("Using seed: " + seed)
+      let seed = (Math.random() * 10000).toString().substr(5, 11)
+      console.log("Using seed: " + seed)
       randomSeed(seed)
     }
     this.startTime = Date.now()
     this.attractors = attractors
     this.layout = layout
-    this.Points = points
+    this.points = points
   }
 
   addElem(f, attrs) {
