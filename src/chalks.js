@@ -28,20 +28,25 @@ class chalks {
   }
 
   addElem(f, attrs) {
+    if (attrs) {
     let strokeAttr = attrs["stroke"]
     let alphaAttr = attrs["alpha"]
     let strokeWeightAttr = attrs["strokeWidth"]
     let noFillAttr = attrs["noFill"]
+    let strokeCapAttr = attrs["strokeCap"]
     if (strokeWeightAttr)
       strokeWeight(strokeWeightAttr)
     if (typeof (strokeAttr) === "string")
       strokeAttr = color(strokeAttr)
+    if (strokeCapAttr)
+      strokeCap(strokeCapAttr)
     if (typeof (strokeAttr) === "object" && alphaAttr)
       strokeAttr.setAlpha(alphaAttr)
     if (noFillAttr !== "undefined" && noFillAttr) {
       noFill();
     }
     stroke(strokeAttr)
+  }
     f()
   }
 
@@ -63,9 +68,11 @@ class chalks {
   curveVertex(pts) {
     return function () {
       beginShape()
-      curveVertex(pts[0].x, pts[0].y)
-      pts.forEach(p => curveVertex(p.x, p.y))
-      curveVertex(pts[pts.length - 1].x, pts[pts.length - 1].y)
+      if (pts.length) {
+        curveVertex(pts[0].x, pts[0].y)
+        pts.forEach(p => curveVertex(p.x, p.y))
+        curveVertex(pts[pts.length - 1].x, pts[pts.length - 1].y)
+      }
       endShape()
     }
   }
