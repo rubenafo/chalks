@@ -1,0 +1,122 @@
+
+"use strict"
+
+class Path {
+
+  constructor (ctx, style={}) {
+    this.ctx = ctx
+    this.style = style
+    this.instrs = []
+  }
+
+  m(x,y) {
+    let point = typeof(x) === "object" ? x : {x:x, y:y}
+    this.instrs.push({instr:"m", p:point}); return this
+  }
+
+  l(x,y) {
+    let point = typeof(x) === "object" ? x : {x:x, y:y}
+    this.instrs.push({instr:"l", p:point}); return this
+  }
+
+  bezier(c1, c2, p2) {
+    this.instrs.push({instr:"b", c1:c1, c2:c2, p2:p2}); return this
+  }
+
+  arc(p1, p2, r) { this.instrs.push({instr:"a", p1:p1, p2:p2, r:r}); return this}
+  quad(c, p) { this.instrs.push({instr:"q", c:c, p:p}); return this }
+
+  applyStyle() {
+    if (this.style.fill) {
+      this.ctx.globalAlpha = this.style.alpha || 1
+      this.ctx.fillStyle = this.style.fill
+      this.ctx.fill()
+    }
+    if (this.style.stroke) {
+      this.ctx.globalAlpha = this.style.strokeAlpha || this.style.alpha || 1
+      this.ctx.strokeStyle = this.style.stroke
+      this.ctx.lineWidth=this.style.strokeWidth || 1
+      this.ctx.stroke()
+    }
+    if (this.style.shadow) {
+      this.ctx.shadowColor = this.style.shadow
+      this.ctx.shadowOffsetX = 10
+      this.ctx.shadowOffsetY = 10
+      //this.ctx.shadowBlur = this.style.shadowBlur;
+    }
+    if (this.style.filter) {
+      this.style.filter.forEach(f => this.ctx.filter(f))
+    }
+    this.ctx.lineCap = this.style.lineCap || "butt"
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+
+  shadow(blur=0, color="black", alpha=1, x=5, y=5) {
+    this.ctx.shadowBlur = blur
+    this.ctx.shadowColor = color
+    this.ctx.shadowOffsetX = x
+    this.ctx.shadowOffsetY = y
+    this.ctx.shadowAlpha = alpha
+    return this
+  }
+
+  rotate(deg, p) {
+    if (p) {
+      this.ctx.translate(p.x, p.y)
+      this.ctx.rotate(deg * Math.PI / 180)
+      this.ctx.translate(-p.x, -p.y)
+    }
+    else
+      this.ctx.rotate(deg * Math.PI / 180)
+  }
+
+  draw () {
+    //this.ctx.save()
+    this.ctx.beginPath()
+    this.instrs.forEach (instr => {
+       switch (instr.instr) {
+         case "m": this.ctx.moveTo(instr.p.x, instr.p.y); break
+         case "l": this.ctx.lineTo(instr.p.x, instr.p.y); break
+         case "b": this.ctx.bezierCurveTo(instr.c1.x, instr.c1.y,
+                                               instr.c2.x, instr.c2.y,
+                                               instr.p2.x, instr.p2.y); break
+         case "a": this.ctx.arcTo(instr.p1.x, instr.p1.y, instr.p2.x, instr.p2.y, instr.r); break
+         case "q": this.ctx.quadraticCurveTo(instr.c.x, instr.c.y, instr.p.x, instr.p.y); break
+       }
+    })
+    this.applyStyle()
+    //this.ctx.restore()
+   }
+
+   fromPoints(m, n, height=10, padding=0) {
+     let vector = {x: n.x - m.x, y:n.y - m.y}
+     let length = Math.sqrt(vector.x * vector.x + vector.y * vector.y)
+     let p0 = {x:m.x -padding, y:m.y - height/2}
+     let p1 = {x:m.x + length + padding, y:m.y - height/2}
+     let p2 = {x:m.x + length + padding, y:m.y + height/2}
+     let p3 = {x:m.x- padding, y:m.y + height/2}
+     this.m(p0).l(p1).l(p2).l(p3).l(p0)
+     let xdiff = n.x - m.x
+     let ydiff = n.y - m.y
+     let deg = Math.atan2(ydiff, xdiff) * (180 / Math.PI)
+     this.rotate(deg, m)
+     return this
+   }
+
+   circle(p, r) {
+     this.ctx.beginPath()
+     this.ctx.arc(p.x, p.y, r, 0, 2 * Math.PI)
+     this.applyStyle()
+     return this
+   }
+
+   line(p0, p1) {
+     this.ctx.beginPath()
+     this.m(p0).l(p1)
+     this.applyStyle()
+     return this
+   }
+
+}
+
+module.exports = Path
