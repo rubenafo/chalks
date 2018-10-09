@@ -7,6 +7,14 @@ class Path {
     this.ctx = ctx
     this.style = style
     this.instrs = []
+    this.ops = []
+  }
+
+  clone() {
+    let path = new Path(this.ctx, this.style)
+    path.instrs = this.instrs.slice(0)
+    path.ops = this.ops.slice(0)
+    return path
   }
 
   m(x,y) {
@@ -60,18 +68,33 @@ class Path {
     return this
   }
 
+  moveTo(p) {
+    this.ops.push({op:"translate", values:[p.x, p.y]})
+    return this
+  }
+
   rotate(deg, p) {
-    if (p) {
-      this.ctx.translate(p.x, p.y)
-      this.ctx.rotate(deg * Math.PI / 180)
-      this.ctx.translate(-p.x, -p.y)
+    if(p) {
+      this.ops.push({op:"translate", values:[p.x, p.y]})
+      this.ops.push({op:"rotate", values:[deg * Math.PI/180]})
+      this.ops.push({op:"translate", values:[-p.x, -p.y]})
     }
-    else
-      this.ctx.rotate(deg * Math.PI / 180)
+    else{
+      this.ops.push({op:"rotate", values:[deg * Math.PI/180]})
+    }
+    return this
   }
 
   draw () {
     //this.ctx.save()
+    this.ops.forEach (op => {
+      if (op.op === "translate") {
+        this.ctx.translate(op.values[0], op.values[1])
+      }
+      else { // rotate
+        this.ctx.rotate(op.values[0])
+      }
+    })
     this.ctx.beginPath()
     this.instrs.forEach (instr => {
        switch (instr.instr) {
@@ -82,6 +105,7 @@ class Path {
                                                instr.p2.x, instr.p2.y); break
          case "a": this.ctx.arcTo(instr.p1.x, instr.p1.y, instr.p2.x, instr.p2.y, instr.r); break
          case "q": this.ctx.quadraticCurveTo(instr.c.x, instr.c.y, instr.p.x, instr.p.y); break
+         case "arc": this.ctx.arc(instr.p.x, instr.p.y, instr.r, instr.sa, instr.ea, instr.cw); break
        }
     })
     this.applyStyle()
@@ -103,10 +127,8 @@ class Path {
      return this
    }
 
-   circle(p, r) {
-     this.ctx.beginPath()
-     this.ctx.arc(p.x, p.y, r, 0, 2 * Math.PI)
-     this.applyStyle()
+   circle(p, r, sa=0, ea=Math.PI * 2, cw=true) {
+     this.instrs.push({instr:"arc", p:p, r:r, sa:sa, ea:ea, cw:cw})
      return this
    }
 

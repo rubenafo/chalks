@@ -109,7 +109,7 @@ class Layout {
    * @param {number} height   - max height
    * @return {object} a list of xy points
    */
-  static rows (origin, interRow, height) {
+  static rows (origin={x:0, y:0}, interRow=10, height=100) {
     let points = [];
     for (let i = origin.y; i < height; i += interRow) {
       points.push({x: origin.x, y: i});
