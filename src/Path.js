@@ -3,17 +3,19 @@
 
 class Path {
 
-  constructor (ctx, style={}) {
-    this.ctx = ctx
+  constructor (scene, style={}) {
     this.style = style
     this.instrs = []
     this.ops = []
+    this.parent = scene
+    this.ctx = scene.ctx
   }
 
   clone() {
-    let path = new Path(this.ctx, this.style)
+    let path = new Path(this, this.style)
     path.instrs = this.instrs.slice(0)
     path.ops = this.ops.slice(0)
+    this.parent.children.push(path)
     return path
   }
 
@@ -138,7 +140,6 @@ class Path {
      this.applyStyle()
      return this
    }
-
 }
 
 module.exports = Path
