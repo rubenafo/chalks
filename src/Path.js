@@ -11,8 +11,8 @@ class Path {
     this.ctx = scene.ctx
   }
 
-  clone() {
-    let path = new Path(this, this.style)
+  clone(style) {
+    let path = new Path(this, style || this.style)
     path.instrs = this.instrs.slice(0)
     path.ops = this.ops.slice(0)
     this.parent.children.push(path)
@@ -35,31 +35,6 @@ class Path {
 
   arc(p1, p2, r) { this.instrs.push({instr:"a", p1:p1, p2:p2, r:r}); return this}
   quad(c, p) { this.instrs.push({instr:"q", c:c, p:p}); return this }
-
-  applyStyle() {
-    if (this.style.fill) {
-      this.ctx.globalAlpha = this.style.alpha || 1
-      this.ctx.fillStyle = this.style.fill
-      this.ctx.fill()
-    }
-    if (this.style.stroke) {
-      this.ctx.globalAlpha = this.style.strokeAlpha || this.style.alpha || 1
-      this.ctx.strokeStyle = this.style.stroke
-      this.ctx.lineWidth=this.style.strokeWidth || 1
-      this.ctx.stroke()
-    }
-    if (this.style.shadow) {
-      this.ctx.shadowColor = this.style.shadow
-      this.ctx.shadowOffsetX = 10
-      this.ctx.shadowOffsetY = 10
-      //this.ctx.shadowBlur = this.style.shadowBlur;
-    }
-    if (this.style.filter) {
-      this.style.filter.forEach(f => this.ctx.filter(f))
-    }
-    this.ctx.lineCap = this.style.lineCap || "butt"
-    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-  }
 
   shadow(blur=0, color="black", alpha=1, x=5, y=5) {
     this.ctx.shadowBlur = blur
@@ -88,7 +63,6 @@ class Path {
   }
 
   draw () {
-    //this.ctx.save()
     this.ops.forEach (op => {
       if (op.op === "translate") {
         this.ctx.translate(op.values[0], op.values[1])
@@ -111,7 +85,31 @@ class Path {
        }
     })
     this.applyStyle()
-    //this.ctx.restore()
+   }
+
+   applyStyle() {
+     if (this.style.fill) {
+       this.ctx.globalAlpha = this.style.alpha || 1
+       this.ctx.fillStyle = this.style.fill
+       this.ctx.fill()
+     }
+     if (this.style.stroke) {
+       this.ctx.globalAlpha = this.style.strokeAlpha || this.style.alpha || 1
+       this.ctx.strokeStyle = this.style.stroke
+       this.ctx.lineWidth=this.style.strokeWidth || 1
+       this.ctx.stroke()
+     }
+     if (this.style.shadow) {
+       this.ctx.shadowColor = this.style.shadow
+       this.ctx.shadowOffsetX = 10
+       this.ctx.shadowOffsetY = 10
+       //this.ctx.shadowBlur = this.style.shadowBlur;
+     }
+     if (this.style.filter) {
+       this.style.filter.forEach(f => this.ctx.filter(f))
+     }
+     this.ctx.lineCap = this.style.lineCap || "butt"
+     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
    }
 
    fromPoints(m, n, height=10, padding=0) {
@@ -130,8 +128,13 @@ class Path {
    }
 
    circle(p, r, sa=0, ea=Math.PI * 2, cw=true) {
-     this.instrs.push({instr:"arc", p:p, r:r, sa:sa, ea:ea, cw:cw})
+     this.instrs.push({instr:"arc", p:{x:0,y:0}, r:r, sa:sa, ea:ea, cw:cw})
+     this.moveTo(p)
      return this
+   }
+
+   rect(p0, w, h) {
+     return this.fromPoints({x:p0.x, y:p0.y+h/2}, {x:p0.x+w, y:p0.y+h/2}, h)
    }
 
    line(p0, p1) {
