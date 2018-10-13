@@ -29,12 +29,42 @@ class Path {
     this.instrs.push({instr:"l", p:point}); return this
   }
 
-  bezier(c1, c2, p2) {
-    this.instrs.push({instr:"b", c1:c1, c2:c2, p2:p2}); return this
-  }
-
+  bezier(c1, c2, p2) { this.instrs.push({instr:"b", c1:c1, c2:c2, p2:p2}); return this }
   arc(p1, p2, r) { this.instrs.push({instr:"a", p1:p1, p2:p2, r:r}); return this}
   quad(c, p) { this.instrs.push({instr:"q", c:c, p:p}); return this }
+
+  center() {
+    let x = 0, y = 0, pts = 0;
+    this.instrs.forEach (i => {
+      switch(i.instr) {
+        case "l" :
+          x += i.p.x; y += i.p.y
+          pts += 1
+          break
+        case "q":
+          x += i.p.x; y += i.p.y;
+          x += i.c.x; y += i.c.y;
+          pts += 2
+          break;
+        case "b":
+          x += i.c1.x; y += i.c1.y
+          x += i.c2.x; y += i.c2.y
+          x += i.p2.x; y += i.p2.y
+          pts += 3
+          break;
+        case "a":
+          x += i.p1.x; y += i.p1.y
+          x += i.p2.x; y += i.p2.y
+          pts += 2
+          break;
+      }
+    })
+    if (pts) {
+      x = x / (pts)
+      y = y / (pts)
+    }
+    return {x:x, y:y}
+  }
 
   shadow(blur=0, color="black", alpha=1, x=5, y=5) {
     this.ctx.shadowBlur = blur
@@ -127,7 +157,7 @@ class Path {
      return this
    }
 
-   circle(p, r, sa=0, ea=Math.PI * 2, cw=true) {
+   circle(p, r=10, sa=0, ea=Math.PI * 2, cw=true) {
      this.instrs.push({instr:"arc", p:{x:0,y:0}, r:r, sa:sa, ea:ea, cw:cw})
      this.moveTo(p)
      return this
