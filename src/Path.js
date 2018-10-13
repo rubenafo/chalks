@@ -75,8 +75,30 @@ class Path {
     return this
   }
 
+  add(p1,p2) {
+    return ({x: p1.x + p2.x, y: p1.y + p2.y})
+  }
+
   moveTo(p) {
-    this.ops.push({op:"translate", values:[p.x, p.y]})
+    let center = this.center()
+    let distance = {x: p.x - center.x, y: p.y - center.y}
+    this.instrs.forEach (i => {
+      switch(i.instr) {
+        case "m" : case "l" : case "arc":
+          i.p = this.add(i.p, distance);
+          break
+        case "q":
+          i.p = this.add(i.p, distance);
+          i.c = this.add(i.c, distance); break
+        case "b":
+          i.c1 = this.add(i.c1, distance)
+          i.c2 = this.add(i.c2, distance)
+          i.p2 = this.add(i.p2, distance); break;
+        case "a":
+          i.p1 = this.add(i.p1, distance);
+          i.p2 = this.add(i.p2, distance); break;
+      }
+    })
     return this
   }
 
