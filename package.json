@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "build": "browserify ./src/chalks.js -o ./lib/chalks.min.js --standalone chalks"
+    "build": "browserify ./src/chalks.js -o ./lib/chalks.min.js --standalone Chalks"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
     "babel-preset-env": "^1.7.0",
     "browserify": "^16.2.2",
     "mocha": "^5.2.0",
-    "uglify-js": "^3.4.8"
+    "uglify-js": "^3.4.8",
+    "wcag-contrast": "^2.1.1"
   }
 }

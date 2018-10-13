@@ -9,6 +9,7 @@ let Layout = require ("./Layout")
 //let Rnd = require ("./Rnd").Rnd
 let Path = require ("./Path")
 let Parametrics = require ("./Parametrics")
+let wcag = require ("wcag-contrast")
 
 class Scene {
 
@@ -22,6 +23,7 @@ class Scene {
     canvas.height = this.height
     this.ctx = this.canvas.getContext('2d')
     this.start = Date.now()
+    console.log(wcag)
     // if (params.seed) {
     //   console.log("Using seed: " + params.seed)
     //   this.rnd = new Rnd(params.seed)
