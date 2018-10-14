@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "build": "browserify ./src/chalks.js --standalone Chalks | uglifyjs -cm > lib/chalks.min.js"
+    "build": "browserify ./src/chalks.js --standalone Chalks | uglifyjs -cm > lib/chalks.min.js",
+    "buildDev": "browserify ./src/chalks.js --standalone Chalks > lib/chalks.min.js"
   },
   "repository": {
     "type": "git",
@@ -28,12 +29,12 @@
   },
   "homepage": "https://github.com/rubenafo/chalks#readme",
   "dependencies": {
+  },
+  "devDependencies": {
+    "uglify-es": "^3.3.9",
     "babel-preset-env": "^1.7.0",
     "browserify": "^16.2.2",
     "mocha": "^5.2.0",
     "wcag-contrast": "^2.1.1"
-  },
-  "devDependencies": {
-    "uglify-es": "^3.3.9"
   }
 }

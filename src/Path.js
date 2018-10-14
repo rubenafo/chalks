@@ -79,7 +79,8 @@ class Path {
     return ({x: p1.x + p2.x, y: p1.y + p2.y})
   }
 
-  moveTo(p) {
+  moveTo(p0,y) {
+    let p = typeof(p0) === "object" ? p0 : {x:p0, y:y}
     let center = this.center()
     let distance = {x: p.x - center.x, y: p.y - center.y}
     this.instrs.forEach (i => {
