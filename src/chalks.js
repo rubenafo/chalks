@@ -28,7 +28,7 @@ class Scene {
     this.ctx = this.canvas.getContext('2d')
     this.start = Date.now()
     if (params.seed) {
-      debug("using seed: " + params.seed)
+      debug("using seed=" + params.seed)
       this.rnd = new Rnd(params.seed)
     } else {
       let seed = (Math.random() * 10000).toString().substr(5, 8)
@@ -60,9 +60,7 @@ class Scene {
   }
 
   path(style) {
-    let path = new Path(this, style)
-    this.children.push(path)
-    return path
+    return new Path(this, style)
   }
 
   // Linear gradient: p0, p1, stops as [[num, color]]
@@ -84,7 +82,7 @@ class Scene {
   }
 
   draw() {
-    this.children.forEach(c => c.draw())
+    this.children.filter(c => !c.style.hide).forEach(c => c.draw())
     debug("ended" + " (" + (Date.now() - this.start) / 1000 + " secs)")
   }
 

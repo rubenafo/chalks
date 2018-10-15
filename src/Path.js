@@ -8,15 +8,16 @@ class Path {
     this.instrs = []
     this.ops = []
     this.parent = scene
+    this.parent.children.push(this)
     this.ctx = scene.ctx
   }
 
   clone(style) {
-    let path = new Path(this, style || this.style)
-    path.instrs = this.instrs.slice(0)
-    path.ops = this.ops.slice(0)
-    this.parent.children.push(path)
-    return path
+    let newPath = new Path(this.parent, style || this.style)
+    delete(newPath.style.hide)
+    newPath.instrs = JSON.parse(JSON.stringify(this.instrs))
+    newPath.ops = JSON.parse(JSON.stringify(this.ops))
+    return newPath
   }
 
   m(x,y) {
@@ -83,10 +84,10 @@ class Path {
     let p = typeof(p0) === "object" ? p0 : {x:p0, y:y}
     let center = this.center()
     let distance = {x: p.x - center.x, y: p.y - center.y}
-    this.instrs.forEach (i => {
+    this.instrs.forEach ((i,ind) => {
       switch(i.instr) {
         case "m" : case "l" : case "arc":
-          i.p = this.add(i.p, distance);
+          this.instrs[ind].p = this.add(i.p, distance)  //this.add(i.p, distance);
           break
         case "q":
           i.p = this.add(i.p, distance);
@@ -103,7 +104,8 @@ class Path {
     return this
   }
 
-  rotate(deg, p) {
+  rotate(deg, pt) {
+    let p = pt || this.center()
     if(p) {
       this.ops.push({op:"translate", values:[p.x, p.y]})
       this.ops.push({op:"rotate", values:[deg * Math.PI/180]})
@@ -116,6 +118,7 @@ class Path {
   }
 
   draw () {
+    this.ctx.save()
     this.ops.forEach (op => {
       if (op.op === "translate") {
         this.ctx.translate(op.values[0], op.values[1])
@@ -162,6 +165,7 @@ class Path {
        this.style.filter.forEach(f => this.ctx.filter(f))
      }
      this.ctx.lineCap = this.style.lineCap || "butt"
+     this.ctx.restore()
      this.ctx.setTransform(1, 0, 0, 1, 0, 0);
    }
 
