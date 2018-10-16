@@ -1,112 +1,100 @@
+//let fs = require ("fs")
+//let path = require ("path")
+//let Canvas = require('canvas')
+//let Image = Canvas.Image
 
-let attractors = require("./Parametrics")
-let layout = require("./Layout")
-let points = require("./Points")
+let Brush = require("./Brush")
+let Layout = require("./Layout")
+//let Rnd = require ("./Rnd").Rnd
+let Path = require("./Path")
+let Rnd = require("./Rnd").Rnd
+let Parametrics = require("./Parametrics")
+let wcag = require("wcag-contrast")
 
-class chalks {
-
-  constructor(params) {
-    this.canvas = createCanvas(params.width, params.height)
-    params.background = params.background || 1
-    if (typeof (params.background) === "string") {
-      background(color(params.background))
-    }
-    else {
-      background(params.background);
-    }
-    if (params.seed)
-      randomSeed(params.seed)
-    else {
-      let seed = (Math.random() * 10000).toString().substr(5, 11)
-      console.log("Using seed: " + seed)
-      randomSeed(seed)
-    }
-    this.startTime = Date.now()
-    this.attractors = attractors
-    this.layout = layout
-    this.points = points
-  }
-
-  addElem(f, attrs) {
-    let strokeAttr = attrs["stroke"]
-    let alphaAttr = attrs["alpha"]
-    let strokeWeightAttr = attrs["strokeWidth"]
-    let noFillAttr = attrs["noFill"]
-    if (strokeWeightAttr)
-      strokeWeight(strokeWeightAttr)
-    if (typeof (strokeAttr) === "string")
-      strokeAttr = color(strokeAttr)
-    if (typeof (strokeAttr) === "object" && alphaAttr)
-      strokeAttr.setAlpha(alphaAttr)
-    if (noFillAttr !== "undefined" && noFillAttr) {
-      noFill();
-    }
-    stroke(strokeAttr)
-    f()
-  }
-
-  rect(ats) { return function () { rect(ats.x, ats.y, ats.width, ats.height) } }
-
-  line(p0, p1) { return function () { line(p0.x, p0.y, p1.x, p1.y) } }
-
-  point(ats) { return function () { point(ats.x, ats.y) } }
-
-
-  shape(pts, closed = true) {
-    return function () {
-      beginShape()
-      pts.forEach(p => vertex(p.x, p.y))
-      closed ? endShape(CLOSE) : endShape()
-    }
-  }
-
-  curveVertex(pts) {
-    return function () {
-      beginShape()
-      curveVertex(pts[0].x, pts[0].y)
-      pts.forEach(p => curveVertex(p.x, p.y))
-      curveVertex(pts[pts.length - 1].x, pts[pts.length - 1].y)
-      endShape()
-    }
-  }
-
-  stopAt(countLimit, saveToFile) {
-    if (frameCount == countLimit) {
-      let time = (Date.now() - this.startTime) / 1000
-      console.log("Execution stopped at " + countLimit + " iterations (" + time + " secs)")
-      if (saveToFile) {
-        save(this.canvas, saveToFile, "png")
-        console.log("File saved to ", saveToFile)
-      }
-      noLoop()
-    }
-  }
+// Provide debug messages in the console
+function debug(str) {
+  console.log("Chalks:", str)
 }
 
-p5.prototype.rint = function (lower, upper) {
-  return Math.round(random(lower, upper))
-}
-
-p5.prototype.rnd = function (start, end) {
-  if (Array.isArray(start)) {
-    return start[rint(0, start.length - 1)]
+class Scene {
+  constructor(params, style = {}) {
+    this.Brush = Brush
+    this.scale = params.scale || 1
+    this.width = params.width * this.scale || 1000
+    this.height = params.height * this.scale || 1000
+    this.canvas = document.getElementById('canvas');
+    canvas.width = this.width
+    canvas.height = this.height
+    this.ctx = this.canvas.getContext('2d')
+    this.start = Date.now()
+    if (params.seed) {
+      debug("using seed=" + params.seed)
+      this.rnd = new Rnd(params.seed)
+    } else {
+      let seed = (Math.random() * 10000).toString().substr(5, 8)
+      debug("using seed: " + seed)
+      this.rnd = new Rnd(seed)
+    }
+    this.children = []
+    this.drawBackground(this.width, this.height, style)
   }
-  let val = 0
-  if (start && end)
-    val = random(start, end)
-  else if (start !== undefined)
-    val = random(0, start)
-  else val = random(0, 1)
-  return val
+
+  drawBackground(width, height, style) {
+    this.ctx.fillStyle = style.fill || "white"
+    this.ctx.fillRect(0, 0, width * this.scale, height * this.scale)
+    this.ctx.fillStyle = "black"
+  }
+
+  setStyle(style) {
+    this.drawBackground(this.width, this.height, style)
+  }
+
+  rint(lower, upper) {
+    return this.rnd.int(lower, upper)
+  }
+  rand(lower, upper) {
+    return this.rnd.random(lower, upper)
+  }
+  pick(list, ...elems) {
+    return this.rnd.pick(list, ...elems)
+  }
+
+  path(style) {
+    return new Path(this, style)
+  }
+
+  // Linear gradient: p0, p1, stops as [[num, color]]
+  lgrad(p0, p1, colors) {
+    let grad = this.ctx.createLinearGradient(0, 0, 1000, 1000)
+    colors.forEach(c => {
+      grad.addColorStop(c[0], c[1])
+    })
+    return grad
+  }
+
+  // Radial gradient
+  rgrad(p0, r0, p1, r1, colors) {
+    let grad = this.ctx.createRadialGradient(p0.x, p0.y, r0, p1.x, p1.y, r1)
+    colors.forEach(c => {
+      grad.addColorStop(c[0], c[1])
+    })
+    return grad
+  }
+
+  draw() {
+    this.children.filter(c => !c.style.hide).forEach(c => c.draw())
+    debug("ended" + " (" + (Date.now() - this.start) / 1000 + " secs)")
+  }
+
+  //saveTo(fileName) {
+  //  this.canvas.createPNGStream().pipe(fs.createWriteStream(fileName))
+  //    console.log("Save to " + fileName + " (" + (Date.now() - this.start) / 1000 + " secs)")
+  //}
 }
 
-p5.prototype.rscale = function (scaleStart, scaleEnd, inputStart, inputEnd, value) {
-  let distance = scaleEnd - scaleStart
-  let step = (value - inputStart) / (inputEnd - inputStart)
-  let returnVal = scaleStart + (distance * step)
-  returnVal = Math.max(returnVal, scaleStart)
-  returnVal = Math.min(returnVal, scaleEnd)
-  return returnVal
+module.exports = {
+  Scene,
+  Layout,
+  Path,
+  Parametrics
 }
-
-module.exports = chalks

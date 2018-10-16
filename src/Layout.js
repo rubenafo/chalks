@@ -41,7 +41,7 @@ class Layout {
   * @param {number} chord - chord value
   * @return {array} list of xy values {x:val, y:val}
   */
-  static Spiral (params)
+  static spiral (params)
   {
     let points = [];
     let centerX = params.x,
@@ -94,7 +94,7 @@ class Layout {
    * @param {number} width       - max width
    * @return {object} a list of xy points
    */
-  static Cols (origin, interColumn, width) {
+  static cols (origin, interColumn, width) {
     let points = [];
     for (let i = origin.x; i < width; i += interColumn) {
       points.push({x:i, y:origin.y});
@@ -109,7 +109,7 @@ class Layout {
    * @param {number} height   - max height
    * @return {object} a list of xy points
    */
-  static Rows (origin, interRow, height) {
+  static rows (origin={x:0, y:0}, interRow=10, height=100) {
     let points = [];
     for (let i = origin.y; i < height; i += interRow) {
       points.push({x: origin.x, y: i});
@@ -130,4 +130,4 @@ class Layout {
 
 }; // end Layout
 
-module.exports.Layout = Layout;
+module.exports = Layout;
