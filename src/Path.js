@@ -13,7 +13,8 @@ class Path {
   }
 
   clone(style) {
-    let newPath = new Path(this.parent, style || this.style)
+    let newStyle = JSON.parse(JSON.stringify(style || this.style))
+    let newPath = new Path(this.parent, newStyle)
     delete(newPath.style.hide)
     newPath.instrs = JSON.parse(JSON.stringify(this.instrs))
     newPath.ops = JSON.parse(JSON.stringify(this.ops))
@@ -87,7 +88,7 @@ class Path {
     this.instrs.forEach ((i,ind) => {
       switch(i.instr) {
         case "m" : case "l" : case "arc":
-          this.instrs[ind].p = this.add(i.p, distance)  //this.add(i.p, distance);
+          i.p = this.add(i.p, distance)  //this.add(i.p, distance);
           break
         case "q":
           i.p = this.add(i.p, distance);

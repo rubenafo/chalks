@@ -1,9 +1,4 @@
-//let fs = require ("fs")
-//let path = require ("path")
-//let Canvas = require('canvas')
-//let Image = Canvas.Image
 
-let Brush = require("./Brush")
 let Layout = require("./Layout")
 //let Rnd = require ("./Rnd").Rnd
 let Path = require("./Path")
@@ -18,7 +13,6 @@ function debug(str) {
 
 class Scene {
   constructor(params, style = {}) {
-    this.Brush = Brush
     this.scale = params.scale || 1
     this.width = params.width * this.scale || 1000
     this.height = params.height * this.scale || 1000
