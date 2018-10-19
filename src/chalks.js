@@ -21,6 +21,7 @@ class Scene {
     canvas.height = this.height
     this.ctx = this.canvas.getContext('2d')
     this.start = Date.now()
+    this.scale = params.scale || 1
     if (params.seed) {
       debug("using seed=" + params.seed)
       this.rnd = new Rnd(params.seed)

@@ -1,6 +1,8 @@
 
 "use strict"
 
+let chroma = require ("chroma-js")
+
 class Path {
 
   constructor (scene, style={}) {
@@ -12,8 +14,11 @@ class Path {
     this.ctx = scene.ctx
   }
 
-  clone(style) {
-    let newStyle = JSON.parse(JSON.stringify(style || this.style))
+  // Clone an object.
+  // "hide" style parameter is not propagated
+  clone(style={}) {
+    let newStyle = JSON.parse(JSON.stringify(this.style))
+    Object.keys(style).forEach(k => newStyle[k] = style[k])
     let newPath = new Path(this.parent, newStyle)
     delete(newPath.style.hide)
     newPath.instrs = JSON.parse(JSON.stringify(this.instrs))
@@ -128,6 +133,9 @@ class Path {
         this.ctx.rotate(op.values[0])
       }
     })
+    if (this.style.filter) {
+      this.ctx.filter = this.style.filter
+    }
     this.ctx.beginPath()
     this.instrs.forEach (instr => {
        switch (instr.instr) {
@@ -161,9 +169,6 @@ class Path {
        this.ctx.shadowOffsetX = 10
        this.ctx.shadowOffsetY = 10
        //this.ctx.shadowBlur = this.style.shadowBlur;
-     }
-     if (this.style.filter) {
-       this.style.filter.forEach(f => this.ctx.filter(f))
      }
      this.ctx.lineCap = this.style.lineCap || "butt"
      this.ctx.restore()

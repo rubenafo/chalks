@@ -29,6 +29,8 @@
   },
   "homepage": "https://github.com/rubenafo/chalks#readme",
   "dependencies": {
+    "chroma-js": "^1.4.0",
+    "yarn": "^1.10.1"
   },
   "devDependencies": {
     "uglify-es": "^3.3.9",
