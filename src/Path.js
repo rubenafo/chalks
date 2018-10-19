@@ -123,11 +123,11 @@ class Path {
     return this
   }
 
-  draw () {
+  draw (scale=1) {
     this.ctx.save()
     this.ops.forEach (op => {
       if (op.op === "translate") {
-        this.ctx.translate(op.values[0], op.values[1])
+        this.ctx.translate(op.values[0]*scale, op.values[1]*scale)
       }
       else { // rotate
         this.ctx.rotate(op.values[0])
@@ -139,14 +139,14 @@ class Path {
     this.ctx.beginPath()
     this.instrs.forEach (instr => {
        switch (instr.instr) {
-         case "m": this.ctx.moveTo(instr.p.x, instr.p.y); break
-         case "l": this.ctx.lineTo(instr.p.x, instr.p.y); break
-         case "b": this.ctx.bezierCurveTo(instr.c1.x, instr.c1.y,
-                                               instr.c2.x, instr.c2.y,
-                                               instr.p2.x, instr.p2.y); break
-         case "a": this.ctx.arcTo(instr.p1.x, instr.p1.y, instr.p2.x, instr.p2.y, instr.r); break
-         case "q": this.ctx.quadraticCurveTo(instr.c.x, instr.c.y, instr.p.x, instr.p.y); break
-         case "arc": this.ctx.arc(instr.p.x, instr.p.y, instr.r, instr.sa, instr.ea, instr.cw); break
+         case "m": this.ctx.moveTo(instr.p.x*scale, instr.p.y*scale); break
+         case "l": this.ctx.lineTo(instr.p.x*scale, instr.p.y*scale); break
+         case "b": this.ctx.bezierCurveTo(instr.c1.x*scale, instr.c1.y*scale,
+                                               instr.c2.x*scale, instr.c2.y*scale,
+                                               instr.p2.x*scale, instr.p2.y*scale); break
+         case "a": this.ctx.arcTo(instr.p1.x*scale, instr.p1.y*scale, instr.p2.x*scale, instr.p2.y*scale, instr.r); break
+         case "q": this.ctx.quadraticCurveTo(instr.c.x*scale, instr.c.y*scale, instr.p.x*scale, instr.p.y*scale); break
+         case "arc": this.ctx.arc(instr.p.x*scale, instr.p.y*scale, instr.r, instr.sa, instr.ea, instr.cw); break
        }
     })
     this.applyStyle()

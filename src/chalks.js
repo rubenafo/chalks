@@ -21,7 +21,6 @@ class Scene {
     canvas.height = this.height
     this.ctx = this.canvas.getContext('2d')
     this.start = Date.now()
-    this.scale = params.scale || 1
     if (params.seed) {
       debug("using seed=" + params.seed)
       this.rnd = new Rnd(params.seed)
@@ -36,7 +35,7 @@ class Scene {
 
   drawBackground(width, height, style) {
     this.ctx.fillStyle = style.fill || "white"
-    this.ctx.fillRect(0, 0, width * this.scale, height * this.scale)
+    this.ctx.fillRect(0, 0, width, height)
     this.ctx.fillStyle = "black"
   }
 
@@ -77,7 +76,7 @@ class Scene {
   }
 
   draw() {
-    this.children.filter(c => !c.style.hide).forEach(c => c.draw())
+    this.children.filter(c => !c.style.hide).forEach(c => c.draw(this.scale))
     debug("ended" + " (" + (Date.now() - this.start) / 1000 + " secs)")
   }
 
