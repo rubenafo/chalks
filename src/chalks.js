@@ -10,6 +10,7 @@ function debug(str) {
 }
 
 class Scene {
+
   constructor(params, style = {}) {
     this.start = Date.now()
     this.scale = params.scale || 1
@@ -24,6 +25,13 @@ class Scene {
     randomSeed(this.seed)
     this.children = []
     this.drawBackground(this.width, this.height, style)
+    this._modules()
+  }
+
+  _modules() {
+    this.Layout = Layout
+    this.Path = Path
+    this.Parametrics = Parametrics
   }
 
   drawBackground(width, height, style) {
@@ -70,9 +78,4 @@ class Scene {
   }
 }
 
-module.exports = {
-  Scene,
-  Layout,
-  Path,
-  Parametrics
-}
+module.exports = Scene;

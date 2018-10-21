@@ -20,7 +20,7 @@ class Layout {
    * @param {number} height - total height
    * @return {array} list of xy values {x:val, y:val}
    */
-  static Grid (xrows, yrows, width, height)
+  static grid (xrows, yrows, width, height)
   {
     let points = [];
     let xspan = width / xrows;
@@ -76,7 +76,7 @@ class Layout {
    * @param {number} length - length of the area
    * @return {array} list containg the four {x,y} points of the intersections
    */
-  static RuleOfThirds (x0, y0, width, height) {
+  static rof3 (x0, y0, width, height) {
     let rulePoints = [];
     let thirdWidth = width / 3;
     let thirdHeight = height / 3;
@@ -124,7 +124,7 @@ class Layout {
    * @param {string} configStr - ops string with the masonry layout
    * @return {object} a list of bricks with the x,y starting point, width and height of the brick, respectively
    */
-  static Masonry (width, height, configStr) {
+  static masonry (width, height, configStr) {
     return new Masonry (width, height, configStr);
   }
 
