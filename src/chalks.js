@@ -2,6 +2,7 @@
 let Layout = require("./Layout")
 let Path = require("./Path")
 let Parametrics = require("./Parametrics")
+let Grammar = require ("./Grammar")
 let wcag = require("wcag-contrast")
 
 // Provide debug messages in the console
@@ -32,6 +33,7 @@ class Scene {
     this.Layout = Layout
     this.Path = Path
     this.Parametrics = Parametrics
+    this.Grammar = Grammar
   }
 
   drawBackground(width, height, style) {
