@@ -23,9 +23,7 @@ class Parametrics {
       let e = (Math.exp(Math.cos(t)) - 2 * Math.cos(lambda * t) - Math.pow(Math.sin(t / 12), 5));
       let x = Math.sin(t) * e;
       let y = Math.cos(t) * e;
-      points.push({
-        x: x * scale + origin.x,
-        y: y * scale + origin.y
+      points.push(createVector(x * scale + origin.x, y * scale + origin.y))
       });
     }
     return points;
@@ -45,7 +43,7 @@ class Parametrics {
     for (let th = 0.0; th < upperLimit; th += stepSize) {
       let x = (R - r) * Math.cos(th) + r * Math.cos(((R - r) / r) * th);
       let y = (R - r) * Math.sin(th) - r * Math.sin(((R - r) / r) * th);
-      points.push({ x: x * scale + origin.x, y: y * scale + origin.y });
+      points.push(createVector(x * scale + origin.x, y * scale + origin.y))
     }
     return points;
   }
@@ -64,7 +62,7 @@ class Parametrics {
     for (let th = 0.0; th < upperLimit; th += stepSize) {
       let x = Math.cos(k * th) * Math.cos(th);
       let y = Math.cos(k * th) * Math.sin(th);
-      points.push({ x: x, y: y });
+      points.push(createVector(x, y));
     }
     return points;
   }
@@ -110,12 +108,7 @@ class Parametrics {
       tmpx = x + h * dt.x;
       tmpy = y + h * dt.y;
       tmpz = z + h * dt.z;
-      //if (Math.abs(tmpx*20 - x*20) > 5 || Math.abs(tmpy*20 - y*20) > 5)
-      points.push({
-        x: tmpx * scale + center.x,
-        y: tmpy * scale + center.y,
-        z: tmpz
-      });
+      let point = createVector(tmpx * scale + center.x, tmpy * scale + center.y, tmpz)
       x = tmpx;
       y = tmpy;
       z = tmpz;
@@ -134,7 +127,7 @@ class Parametrics {
    * @param {number} c - value
    * @param {number} h - value
    * @return a list of xypoints
-  
+
     Lorentz Attractor code.
     http://www.algosome.com/articles/lorenz-attractor-programming-code.html
   */
@@ -160,11 +153,7 @@ class Parametrics {
       tmpx = x + h * dt.x;
       tmpy = y + h * dt.y;
       tmpz = z + h * dt.z;
-      points.push({
-        x: tmpx * scale + origin.x,
-        y: tmpy * scale + origin.y,
-        z: tmpz
-      });
+      points.push(createVector(tmpx * scale + origin.x, tmpy * scale + origin.y, tmpz))
       x = tmpx;
       y = tmpy;
       z = tmpz;
@@ -205,14 +194,9 @@ class Parametrics {
         a[9] * x * y + a[10] * y + a[11] * y * y;
       let xvalue = (origin.x) * nx + origin.x;
       let yvalue = (origin.y) * ny + origin.y;
-      //let previousPoint = res[res.length-1];
-      points.push({
-        x: Math.abs(xvalue),
-        y: Math.abs(yvalue)
-      });
+      points.push(createVector(Math.abs(xvalue), Math.abs(yvalue)))
       x = nx;
       y = ny;
-      //r: Functions.calculateAngle (previousPoint, {x:xvalue, y:yvalue})});
     }
     return points;
   }
@@ -229,7 +213,7 @@ class Parametrics {
     for (let i = 0; i < loops; i++) {
       let nextx = (Math.sin(a * yt) - Math.cos(b * xt))
       let nexty = (Math.sin(c * xt) - Math.cos(d * yt))
-      points.push({ x: scale * xt + origin[0] + scale, y: scale * yt + origin[1] - scale })
+      points.push(createVector(scale * xt + origin[0] + scale, scale * yt + origin[1] - scale))
       xt = nextx
       yt = nexty
     }

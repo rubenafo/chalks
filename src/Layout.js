@@ -27,7 +27,7 @@ class Layout {
     let yspan = height / yrows;
     for (let ypoints = 1; ypoints < yrows ; ypoints++)
       for (let xpoints = 1;  xpoints < xrows; xpoints++)
-        points.push ({x: xpoints * xspan, y: ypoints * yspan});
+        points.push (createVector(xpoints * xspan, y: ypoints * yspan));
     return points;
   }
 
@@ -62,7 +62,9 @@ class Layout {
       let x = centerX + Math.cos ( around ) * away;
       let y = centerY + Math.sin ( around ) * away;
       theta += chord / away;
-      points.push({x: x, y: y, r: theta});
+      let p = createVector(x,y)
+      p.r = theta
+      points.push(p)
     }
     return points;
   }
@@ -80,10 +82,10 @@ class Layout {
     let rulePoints = [];
     let thirdWidth = width / 3;
     let thirdHeight = height / 3;
-    rulePoints.push ({x: thirdWidth + x0, y: thirdHeight + y0});
-    rulePoints.push ({x: thirdWidth * 2 + x0, y: thirdHeight + y0});
-    rulePoints.push ({x: thirdWidth * 2 + x0, y: thirdHeight * 2 + y0});
-    rulePoints.push ({x: thirdWidth + x0, y: thirdHeight * 2 + y0});
+    rulePoints.push (createVector(thirdWidth + x0, thirdHeight + y0))
+    rulePoints.push (createVector(thirdWidth * 2 + x0, thirdHeight + y0))
+    rulePoints.push (createVector(thirdWidth * 2 + x0, thirdHeight * 2 + y0))
+    rulePoints.push (createVector(thirdWidth + x0, thirdHeight * 2 + y0))
     return rulePoints;
   }
 
@@ -97,7 +99,7 @@ class Layout {
   static cols (origin, interColumn, width) {
     let points = [];
     for (let i = origin.x; i < width; i += interColumn) {
-      points.push({x:i, y:origin.y});
+      points.push(createVector(i, origin.y))
     }
     return points;
   }
@@ -112,7 +114,7 @@ class Layout {
   static rows (origin={x:0, y:0}, interRow=10, height=100) {
     let points = [];
     for (let i = origin.y; i < height; i += interRow) {
-      points.push({x: origin.x, y: i});
+      points.push(createVector(origin.x, i))
     }
     return points;
   }
