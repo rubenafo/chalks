@@ -5,14 +5,16 @@ Chalks is fully compatible with p5js and just provides some handy tools to simpl
 Some of the components:
 * Simplified path object to define styles and define curves in a plain declarative way
 * Attractors
-    * butterfly curve
-    * hypocycloid
-    * rose
-    * rossler
-    * lorentz
-    * dejon
+    * Butterfly curve
+    * Hypocycloid
+    * Rose
+    * Rossler
+    * Lorentz
+    * Dejon
 * Points manipulation (subidivide, subchunks)
 * Layout: column points, row points
+* Grammars
+* Color handling: integration with [Chromajs](https://www.npmjs.com/package/chroma-js)
 
 ## Example
 ```javascript
@@ -22,7 +24,7 @@ function setup() {
 }
 
 function draw() {
-    points.forEach(p => ch.path({fill:"red", alpha:random(), stroke:"black", strokeWidth:2}, 10).moveTo(p))
+    points.forEach(p => ch.path({fill:"red", alpha:random(), stroke:"black", strokeWidth:2}, 10).m(p).l(p.add(10)))
     ch.draw() // draw once and stop loop at first iteration by default
 }
 ```

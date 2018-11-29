@@ -1,13 +1,13 @@
 {
   "name": "chalks",
-  "version": "0.0.91",
+  "version": "0.1",
   "description": "A set of handy tools on top of p5js",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "build": "browserify ./src/chalks.js --standalone Chalks | uglifyjs -cm > lib/chalks.min.js",
-    "buildDev": "browserify ./src/chalks.js --standalone Chalks > lib/chalks.min.js"
+    "build": "browserify ./src/chalks.js --standalone Chalks | uglifyjs -cm > dist/chalks.min.js",
+    "devBuild": "browserify ./src/chalks.js --standalone Chalks > dist/chalks.dev.min.js"
   },
   "repository": {
     "type": "git",
@@ -30,13 +30,14 @@
   "homepage": "https://github.com/rubenafo/chalks#readme",
   "dependencies": {
     "chroma-js": "^1.4.0",
+    "png-metadata": "^1.0.2",
     "yarn": "^1.10.1"
   },
   "devDependencies": {
-    "uglify-es": "^3.3.9",
     "babel-preset-env": "^1.7.0",
     "browserify": "^16.2.2",
+    "chroma-js": "^1.4.0",
     "mocha": "^5.2.0",
-    "wcag-contrast": "^2.1.1"
+    "uglify-es": "^3.3.9"
   }
 }

@@ -158,12 +158,10 @@ class Path {
        this.ctx.fillStyle = this.style.fill
        this.ctx.fill()
      }
-     if (this.style.stroke) {
-       this.ctx.globalAlpha = this.style.strokeAlpha || this.style.alpha || 1
-       this.ctx.strokeStyle = this.style.stroke
-       this.ctx.lineWidth=this.style.strokeWidth || 1
-       this.ctx.stroke()
-     }
+    this.ctx.globalAlpha = this.style.strokeAlpha || this.style.alpha || 1
+    this.ctx.strokeStyle = this.style.stroke || "black"
+    this.ctx.lineWidth=this.style.strokeWidth || 1
+    this.ctx.stroke()
      if (this.style.shadow) {
        this.ctx.shadowColor = this.style.shadow
        this.ctx.shadowOffsetX = 10

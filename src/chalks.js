@@ -3,8 +3,9 @@ let Layout = require("./Layout")
 let Path = require("./Path")
 let Parametrics = require("./Parametrics")
 let Grammar = require ("./Grammar")
-let wcag = require("wcag-contrast")
 
+let chroma = require ("chroma-js")
+global.chroma = chroma;
 // Provide debug messages in the console
 function debug(str) {
   console.log("Chalks:", str)
@@ -22,7 +23,7 @@ class Scene {
     this.canvas = document.getElementById('defaultCanvas0');
     this.ctx = this.canvas.getContext("2d")
     this.seed = params.seed ? params.seed : (Math.random() * 10000).toString().substr(5, 8)
-    debug("using seed=" + params.seed)
+    debug("using seed=" + this.seed)
     randomSeed(this.seed)
     this.children = []
     this.drawBackground(this.width, this.height, style)
@@ -78,6 +79,18 @@ class Scene {
     }
     noLoop()
   }
+}
+
+String.prototype.chroma = function () {
+  return chroma(this.toString())
+}
+
+p5.Vector.prototype.radd = function (x,y) {
+  return createVector(this.x, this.y, this.z).add(random(x,y), random(x,y), random(x,y))
+}
+
+p5.Vector.prototype.rsub = function (x,y) {
+  return createVector(this.x, this.y, this.z).sub(random(x,y), random(x,y), random(x,y))
 }
 
 module.exports = Scene;
