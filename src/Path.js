@@ -37,6 +37,12 @@ class Path {
   }
 
   bezier(c1, c2, p2) { this.instrs.push({instr:"b", c1:c1, c2:c2, p2:p2}); return this }
+  bc (p) {
+    let previous = this.instrs[this.instrs.length-1]
+    if (previous.instr !== "b")
+      throw ("Previous instruction to bc() must be bezier()")
+    this.bezier(previous.c1, previous.c2, p)
+  }
   arc(p1, p2, r) { this.instrs.push({instr:"a", p1:p1, p2:p2, r:r}); return this}
   quad(c, p) { this.instrs.push({instr:"q", c:c, p:p}); return this }
 
@@ -157,6 +163,9 @@ class Path {
        this.ctx.globalAlpha = this.style.alpha || 1
        this.ctx.fillStyle = this.style.fill
        this.ctx.fill()
+     }
+     else {
+       this.ctx.noFill
      }
     this.ctx.globalAlpha = this.style.strokeAlpha || this.style.alpha || 1
     this.ctx.strokeStyle = this.style.stroke || "black"

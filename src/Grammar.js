@@ -8,9 +8,9 @@
 
 class Grammar {
 
-  constructor (f) {
-    f()
+  constructor () {
     this.branches = {}; // name -> {p, fun}
+    this.fns = [] // stores the function calls
   }
 
   add (weight, branchFun) {
@@ -18,17 +18,19 @@ class Grammar {
     return this
   }
 
-  run (start, it=10) {
+  run (startFun, setupFun, it=10) {
     this.stop = it
     this.it = 0
+    if (setupFun)
+      setupFun()
     let runStart = undefined
-    if (start instanceof Function) {
-      runStart = start
+    if (startFun instanceof Function) {
+      runStart = startFun
     }
     else {
-      runStart = this.branches[start]
+      runStart = this.branches[startFun]
       if (!runStart)
-        throw ("Grammar error: " + start + " function not found. Did you add() it to the grammar?")
+        throw ("Grammar error: " + runStart + " method not found. Did you add() it to the grammar?")
       runStart = runStart.fun
     }
     runStart()
@@ -40,8 +42,9 @@ class Grammar {
       let funName = random (functionNames)
       if (funName in this.branches)
         this.branches[funName].fun()
+        //this.fns.push(this.branches[funName])
       else
-        throw ("Grammar error: " + funName + " function not found. Did you add() it to the grammar?")
+        throw ("Grammar error: " + funName + " method not found. Did you add() it to the grammar?")
     }
     else
       console.log("Stopped after " + this.stop + " iterations")

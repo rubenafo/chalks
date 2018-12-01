@@ -24,7 +24,6 @@ class Parametrics {
       let x = Math.sin(t) * e;
       let y = Math.cos(t) * e;
       points.push(createVector(x * scale + origin.x, y * scale + origin.y))
-      });
     }
     return points;
   }
