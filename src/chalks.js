@@ -81,16 +81,15 @@ class Scene {
   }
 }
 
-String.prototype.chroma = function () {
-  return chroma(this.toString())
+p5.Vector.prototype.radd = function (x,y,z) {
+  let vx = typeof(x) === "function" ? x() : x
+  let vy = typeof(y) === "function" ? y() : y
+  let vz = typeof(z) === "function" ? z() : z
+  return createVector(this.x, this.y, this.z).add(vx, vy, vz)
 }
 
-p5.Vector.prototype.radd = function (x,y) {
-  return createVector(this.x, this.y, this.z).add(random(x,y), random(x,y), random(x,y))
-}
-
-p5.Vector.prototype.rsub = function (x,y) {
-  return createVector(this.x, this.y, this.z).sub(random(x,y), random(x,y), random(x,y))
+p5.prototype.r = function (x,y,z) {
+  return random(x,y,z)
 }
 
 module.exports = Scene;

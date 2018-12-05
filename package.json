@@ -1,6 +1,6 @@
 {
   "name": "chalks",
-  "version": "0.1",
+  "version": "0.1.0",
   "description": "A set of handy tools on top of p5js",
   "main": "server.js",
   "scripts": {
@@ -30,6 +30,7 @@
   "homepage": "https://github.com/rubenafo/chalks#readme",
   "dependencies": {
     "chroma-js": "^1.4.0",
+    "npm": "^6.4.1",
     "png-metadata": "^1.0.2",
     "yarn": "^1.10.1"
   },
