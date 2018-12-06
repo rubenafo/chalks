@@ -47,15 +47,22 @@ class Grammar {
   take (...functionNames) {
     if (this.it < this.stop) {
       let funName = random (functionNames)
-      if (funName in this.branches) {
-        if (this.debug)
-          console.log("Branching to " + this.branches[funName].fun.name)
+      if (typeof(funName) === "function")
+      {
         this.it++
-        this.branches[funName].fun()
-        //this.fns.push(this.branches[funName].fun)
+        funName()
       }
-      else
-        throw ("Grammar error: " + funName + " method not found. Did you add() it to the grammar?")
+      else {
+        if (funName in this.branches) {
+          if (this.debug)
+            console.log("Branching to " + this.branches[funName].fun.name)
+          this.it++
+          this.branches[funName].fun()
+          //this.fns.push(this.branches[funName].fun)
+        }
+        else
+          throw ("Grammar error: " + funName + " method not found. Did you add() it to the grammar?")
+      }
     }
     else
       console.log("Stopped after " + this.stop + " iterations")
