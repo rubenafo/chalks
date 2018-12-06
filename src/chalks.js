@@ -72,7 +72,13 @@ class Scene {
   draw(loops=1, targetFile) {
     let i = loops
     while (i--)
-      this.children.filter(c => !c.style.hide).forEach(c => c.draw(this.scale))
+      this.children.filter(c => !c.style.hide)
+        .sort((a,b) => {
+          let va = a.style.z | 0
+          let vb = b.style.z | 0
+          return va - vb
+        })
+        .forEach(c => c.draw(this.scale))
     debug("ended" + " (" + (Date.now() - this.start) / 1000 + " secs)")
     if (targetFile) {
       saveCanvas(this.p5canvas, targetFile, 'png');

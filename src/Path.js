@@ -102,10 +102,8 @@ class Path {
   draw (scale=1) {
     this.ctx.save()
     if (this.clippedBy) {
-      let p0x = 0 //this.instrs[0].p.x
-      let p0y = 0 // this.instrs[0].p.y
       let region = new Path2D();
-      region.rect(this.clippedBy.x + p0x, this.clippedBy.y + p0y, this.clippedBy.w, this.clippedBy.h)
+      region.rect(this.clippedBy.x, this.clippedBy.y, this.clippedBy.w, this.clippedBy.h)
       this.ctx.clip(region)
     }
     if (this.style.filter) {
