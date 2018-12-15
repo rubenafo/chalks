@@ -24,8 +24,8 @@ function setup() {
 }
 
 function draw() {
-    points.forEach(p => ch.path({fill:"red", alpha:random(), stroke:"black", strokeWidth:2}, 10).m(p).l(p.add(10)))
-    ch.draw() // draw once and stop loop at first iteration by default
+    points.forEach(p => ch.path({fill:"red", alpha:random(), stroke:"black", strokeWidth:2}, 10).m(p).l(p, p.cadd(10)).draw())
+    noLoop()
 }
 ```
 ## Installation
