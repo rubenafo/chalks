@@ -212,7 +212,7 @@ class Parametrics {
     for (let i = 0; i < loops; i++) {
       let nextx = (Math.sin(a * yt) - Math.cos(b * xt))
       let nexty = (Math.sin(c * xt) - Math.cos(d * yt))
-      points.push(createVector(scale * xt + origin[0] + scale, scale * yt + origin[1] - scale))
+      points.push(createVector(scale * xt + origin.x + scale, scale * yt + origin.y - scale))
       xt = nextx
       yt = nexty
     }
