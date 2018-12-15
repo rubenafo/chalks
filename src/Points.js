@@ -31,6 +31,19 @@ class Points {
       let f = function (p) { return {x:p.x + random()*val, y:p.y + random()*val}}
       return points.map(f)
     }
+
+    static closest (point, listPoints) {
+      let closest = undefined
+      let distance = 1e10
+      listPoints.forEach (p => {
+        let d = Math.sqrt(Math.pow(p.x,2) + Math.pow(p.y, 2))
+        if (d < distance) {
+          distance = d
+          closest = p
+        }
+      })
+      return closest
+    }
 }
 
 module.exports = Points

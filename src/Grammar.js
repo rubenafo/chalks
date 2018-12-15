@@ -18,9 +18,10 @@ class Grammar {
     return this
   }
 
-  run (startFun, setupFun, it=10) {
+  run (startFun, setupFun, it=10, debug=false) {
     this.stop = it
     this.it = 0
+    this.debug = debug
     if (setupFun)
       setupFun()
     let runStart = undefined
@@ -33,18 +34,33 @@ class Grammar {
         throw ("Grammar error: " + runStart + " method not found. Did you add() it to the grammar?")
       runStart = runStart.fun
     }
-    runStart()
+    if (this.debug)
+      console.log("Starting grammar with " + runStart.name)
+    this.fns.push(runStart)
+    while (this.fns.length > 0) {
+      let next = this.fns.shift()
+      next()
+    }
   }
 
   take (...functionNames) {
     if (this.it < this.stop) {
-      this.it++;
       let funName = random (functionNames)
-      if (funName in this.branches)
-        this.branches[funName].fun()
-        //this.fns.push(this.branches[funName])
-      else
-        throw ("Grammar error: " + funName + " method not found. Did you add() it to the grammar?")
+      if (typeof(funName) === "function")
+      {
+        this.it++
+        this.fns.push(funName)
+      }
+      else {
+        if (funName in this.branches) {
+          if (this.debug)
+            console.log("Branching to " + this.branches[funName].fun.name)
+          this.it++
+          this.fns.push(this.branches[funName].fun)
+        }
+        else
+          throw ("Grammar error: " + funName + " method not found. Did you add() it to the grammar?")
+      }
     }
     else
       console.log("Stopped after " + this.stop + " iterations")

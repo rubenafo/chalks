@@ -1,4 +1,4 @@
-let points = require ("../src/points.js")
+let points = require ("../src/Points.js")
 let assert = require ("assert")
 
 it ("subdivide points", function () {

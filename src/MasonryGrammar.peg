@@ -1,0 +1,38 @@
+/*
+ * This is a grammar to describe Masonry layouts.
+ */
+
+start = (shortActions / moveForward)*
+
+content = "[" n:(number)+ "]" ","? pos:number? {
+         var percN = n.map(function(i) { return i/100;}); 
+         return {splits: n.length, pos: pos || 0, values:percN} } /
+      splits:number ","? pos:number? {
+        var elems = [];
+        for (var i = 0; i < splits;i++) 
+	  elems[i] = 1/splits;
+        return {splits: splits, pos: pos || 0, values: elems };
+      }
+
+number = digits:[0-9]+ ((".") [0-9]+)? ","? { return parseFloat(digits.join(""), 10); }
+         /*negDigit:[\-0-9]+ ((".") [0-9]+)? { return parseFloat(negDigit.join(""), 10); }*/
+
+shortActions =
+  op:("|" / "-") p:content?
+  {
+    var act = {op: op, splits:2, pos:0, values:[0.5,0.5]};
+    if (p != null && p) {
+     act.splits = p.splits;
+     act.pos = p.pos;
+     act.values = p.values;
+    }
+    return act;
+  }
+
+moveForward = ">" pos:number?
+  {
+    var act = { op:">", pos:"1"};
+    if (pos != null && pos)
+      act.pos = pos;
+    return act;
+  }

@@ -6,6 +6,8 @@
 
 "use strict";
 
+let Masonry = require ("./Masonry").Masonry
+
 /**
  * @classdesc This module contains functions to generate layout points
  * @class
@@ -41,15 +43,9 @@ class Layout {
   * @param {number} chord - chord value
   * @return {array} list of xy values {x:val, y:val}
   */
-  static spiral (params)
+  static spiral (maxPoints, centerX, centerY, radius,coils, chord)
   {
     let points = [];
-    let centerX = params.x,
-        centerY = params.y,
-        radius = params.radius,
-        coils = params.coils,
-        chord = params.chord,
-        maxPoints = params.points;
     let rotation = 2 * Math.PI;
     let thetaMax = coils * 2 * Math.PI;
     let awayStep = radius / thetaMax;
@@ -124,10 +120,11 @@ class Layout {
    * @param {number} width     - width of the masonry
    * @param {number} height    - height of the masonry
    * @param {string} configStr - ops string with the masonry layout
+   * @param {number} margin    - margin betwween blocks
    * @return {object} a list of bricks with the x,y starting point, width and height of the brick, respectively
    */
-  static masonry (width, height, configStr) {
-    return new Masonry (width, height, configStr);
+  static masonry (width, height, configStr, margin) {
+    return new Masonry (width, height, configStr, margin);
   }
 
 }; // end Layout

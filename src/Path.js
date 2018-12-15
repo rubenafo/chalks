@@ -1,3 +1,9 @@
+/**
+* @license
+
+* Copyright 2019 Ruben Afonso, rubenaf.com
+* This source code is licensed under the Apache license (see LICENSE file)
+**/
 
 "use strict"
 
@@ -8,10 +14,9 @@ class Path {
   constructor (scene, style={}) {
     this.style = style
     this.instrs = []
-    this.ops = []
     this.parent = scene
-    this.parent.children.push(this)
     this.ctx = scene.ctx
+    this.clippedBy = undefined
   }
 
   // Clone an object.
@@ -22,61 +27,53 @@ class Path {
     let newPath = new Path(this.parent, newStyle)
     delete(newPath.style.hide)
     newPath.instrs = JSON.parse(JSON.stringify(this.instrs))
-    newPath.ops = JSON.parse(JSON.stringify(this.ops))
     return newPath
   }
 
   m(x,y) {
-    let point = typeof(x) === "object" ? x : {x:x, y:y}
+    let point = typeof(x) === "object" ? {x:x.x, y:x.y} : {x:x, y:y}
     this.instrs.push({instr:"m", p:point}); return this
   }
 
   l(x,y) {
-    let point = typeof(x) === "object" ? x : {x:x, y:y}
+    let point = typeof(x) === "object" ? {x:x.x, y:x.y} : {x:x, y:y}
     this.instrs.push({instr:"l", p:point}); return this
   }
 
-  bezier(c1, c2, p2) { this.instrs.push({instr:"b", c1:c1, c2:c2, p2:p2}); return this }
+  bezier(c1, c2, p2) {
+      this.instrs.push({instr:"b",
+        c1:{x:c1.x, y:c1.y, z:c1.z}, c2:{x:c2.x, y:c2.y, z:c2.z}, p2:{x:p2.x, y:p2.y, z:p2.z}});
+      return this
+  }
   bc (p) {
     let previous = this.instrs[this.instrs.length-1]
     if (previous.instr !== "b")
       throw ("Previous instruction to bc() must be bezier()")
-    this.bezier(previous.c1, previous.c2, p)
+    this.bezier(Object.assign({}, previous.c1), Object.assign({}, previous.c2), p)
+    return this
   }
-  arc(p1, p2, r) { this.instrs.push({instr:"a", p1:p1, p2:p2, r:r}); return this}
-  quad(c, p) { this.instrs.push({instr:"q", c:c, p:p}); return this }
+  arc(p1, p2, r) {
+    this.instrs.push({instr:"a",
+      p1:{x:p1.x, y:p1.y, z:p1.z}, p2:{x:p2.x, y:p2.y, z:p2.z}, r:r})
+    return this
+  }
+  quad(c, p) {
+    this.instrs.push({instr:"q", c:{x:c.x, y:c.y, z:c.z}, p:{x:p.x, y:p.y, z:p.z}})
+    return this
+  }
 
   center() {
-    let x = 0, y = 0, pts = 0;
+    let pts = 0;
+    let centerPt = createVector(0,0)
     this.instrs.forEach (i => {
-      switch(i.instr) {
-        case "l" :
-          x += i.p.x; y += i.p.y
-          pts += 1
-          break
-        case "q":
-          x += i.p.x; y += i.p.y;
-          x += i.c.x; y += i.c.y;
-          pts += 2
-          break;
-        case "b":
-          x += i.c1.x; y += i.c1.y
-          x += i.c2.x; y += i.c2.y
-          x += i.p2.x; y += i.p2.y
-          pts += 3
-          break;
-        case "a":
-          x += i.p1.x; y += i.p1.y
-          x += i.p2.x; y += i.p2.y
-          pts += 2
-          break;
-      }
+      Object.keys(i).filter(k => k !== "instr").forEach (k => {
+          centerPt.add(i[k].x, i[k].y)
+      })
+      pts += Object.keys(i).length -1
     })
-    if (pts) {
-      x = x / (pts)
-      y = y / (pts)
-    }
-    return {x:x, y:y}
+    if (pts)
+      centerPt.div(pts)
+    return centerPt;
   }
 
   shadow(blur=0, color="black", alpha=1, x=5, y=5) {
@@ -88,57 +85,39 @@ class Path {
     return this
   }
 
-  add(p1,p2) {
-    return ({x: p1.x + p2.x, y: p1.y + p2.y})
-  }
-
   moveTo(p0,y) {
     let p = typeof(p0) === "object" ? p0 : {x:p0, y:y}
     let center = this.center()
     let distance = {x: p.x - center.x, y: p.y - center.y}
-    this.instrs.forEach ((i,ind) => {
-      switch(i.instr) {
-        case "m" : case "l" : case "arc":
-          i.p = this.add(i.p, distance)  //this.add(i.p, distance);
-          break
-        case "q":
-          i.p = this.add(i.p, distance);
-          i.c = this.add(i.c, distance); break
-        case "b":
-          i.c1 = this.add(i.c1, distance)
-          i.c2 = this.add(i.c2, distance)
-          i.p2 = this.add(i.p2, distance); break;
-        case "a":
-          i.p1 = this.add(i.p1, distance);
-          i.p2 = this.add(i.p2, distance); break;
-      }
+    this.instrs.forEach (i => {
+      Object.keys(i).forEach (k => {
+        if (k !== "instr") {
+          i[k].x += distance.x
+          i[k].y += distance.y
+        }
+      })
     })
     return this
   }
 
-  rotate(deg, pt) {
-    let p = pt || this.center()
-    if(p) {
-      this.ops.push({op:"translate", values:[p.x, p.y]})
-      this.ops.push({op:"rotate", values:[deg * Math.PI/180]})
-      this.ops.push({op:"translate", values:[-p.x, -p.y]})
-    }
-    else{
-      this.ops.push({op:"rotate", values:[deg * Math.PI/180]})
-    }
+  rotate (deg, pt) {
+    pt = pt || this.center()
+    this.instrs.forEach (instr => {
+      Object.keys(instr).forEach(k => {
+        if ( k !== "instr")
+          instr[k] = this.rotatePoint(instr[k], deg, pt)
+      })
+    })
     return this
   }
 
   draw (scale=1) {
     this.ctx.save()
-    this.ops.forEach (op => {
-      if (op.op === "translate") {
-        this.ctx.translate(op.values[0]*scale, op.values[1]*scale)
-      }
-      else { // rotate
-        this.ctx.rotate(op.values[0])
-      }
-    })
+    if (this.clippedBy) {
+      let region = new Path2D();
+      region.rect(this.clippedBy.x, this.clippedBy.y, this.clippedBy.w, this.clippedBy.h)
+      this.ctx.clip(region)
+    }
     if (this.style.filter) {
       this.ctx.filter = this.style.filter
     }
@@ -156,11 +135,12 @@ class Path {
        }
     })
     this.applyStyle()
+    return this
    }
 
    applyStyle() {
      if (this.style.fill) {
-       this.ctx.globalAlpha = this.style.alpha || 1
+       this.ctx.globalAlpha = "alpha" in this.style ? this.style.alpha : 1
        this.ctx.fillStyle = this.style.fill
        this.ctx.fill()
      }
@@ -168,10 +148,12 @@ class Path {
        this.ctx.noFill
      }
     this.ctx.globalAlpha = this.style.strokeAlpha || this.style.alpha || 1
-    this.ctx.strokeStyle = this.style.stroke || "black"
-    this.ctx.lineWidth=this.style.strokeWidth || 1
-    this.ctx.stroke()
-     if (this.style.shadow) {
+    if (this.style.strokeWidth || this.style.stroke) {
+      this.ctx.strokeStyle = this.style.stroke || "black"
+      this.ctx.lineWidth=this.style.strokeWidth || 1
+      this.ctx.stroke()
+    }
+    if (this.style.shadow) {
        this.ctx.shadowColor = this.style.shadow
        this.ctx.shadowOffsetX = 10
        this.ctx.shadowOffsetY = 10
@@ -197,9 +179,19 @@ class Path {
      return this
    }
 
+   rotatePoint (p, deg, around) {
+     let radians = deg * Math.PI / 180.0,
+         cos = Math.cos(radians),
+         sin = Math.sin(radians)
+     let dx = p.x - around.x,
+         dy = p.y - around.y;
+     let newx = cos * dx - sin * dy + around.x
+     let newy = sin * dx + cos * dy + around.y
+     return {x:newx, y:newy}
+   }
+
    circle(p, r=10, sa=0, ea=Math.PI * 2, cw=true) {
-     this.instrs.push({instr:"arc", p:{x:0,y:0}, r:r, sa:sa, ea:ea, cw:cw})
-     this.moveTo(p)
+     this.instrs.push({instr:"arc", p:p, r:r, sa:sa, ea:ea, cw:cw})
      return this
    }
 
@@ -208,9 +200,12 @@ class Path {
    }
 
    line(p0, p1) {
-     this.ctx.beginPath()
      this.m(p0).l(p1)
-     this.applyStyle()
+     return this
+   }
+
+   clip (x,y,w,h) {
+     this.clippedBy = {x:x, y:y, w:w, h:h}
      return this
    }
 }

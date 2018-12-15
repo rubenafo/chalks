@@ -6,8 +6,7 @@
 
 "use strict";
 
-let Rnd = require ("./Rnd.js").Rnd;
-let MasonryParser = require ("../grammars/MasonryGrammar.js");
+let MasonryParser = require ("./MasonryGrammar.js");
 
 class Brick {
 
@@ -21,15 +20,22 @@ class Brick {
 
 class Masonry {
 
-    constructor (width, height, configString) {
+    constructor (width, height, configString, margin) {
       this.bricks = [];   // a brick: {x0, y0, width, height}
-      this.rand = new Rnd(40);
-      this.init(width, height, configString);
+      this.init(width, height, configString, margin)
       return this.bricks;
     }
 
-    init (width, height, configString) {
+    init (width, height, configString, margin) {
       this.contextInfo(width, height, configString)
+      if (this.margin) {
+        this.bricks.forEach (b => {
+          b.x += margin
+          b.y += margin
+          b.width -= margin
+          b.width -= margin
+        })
+      }
     }
 
     contextInfo (w, h, configStr) {
