@@ -3,6 +3,7 @@ let Layout = require("./Layout")
 let Path = require("./Path")
 let Parametrics = require("./Parametrics")
 let Grammar = require ("./Grammar")
+let Points = require ("./Points")
 
 let chroma = require ("chroma-js")
 global.chroma = chroma;
@@ -25,7 +26,6 @@ class Scene {
     this.seed = params.seed ? params.seed : (Math.random() * 10000).toString().substr(5, 8)
     debug("using seed=" + this.seed)
     randomSeed(this.seed)
-    this.children = []
     this.drawBackground(this.width, this.height, style)
     this._modules()
   }
@@ -35,6 +35,7 @@ class Scene {
     this.Path = Path
     this.Parametrics = Parametrics
     this.Grammar = Grammar
+    this.Points = Points
   }
 
   drawBackground(width, height, style) {
@@ -70,24 +71,27 @@ class Scene {
   }
 
   draw(loops=1, targetFile) {
-    let i = loops
-    while (i--)
-      this.children.filter(c => !c.style.hide)
-        .sort((a,b) => {
-          let va = a.style.z | 0
-          let vb = b.style.z | 0
-          return va - vb
-        })
-        .forEach(c => c.draw(this.scale))
+    this.ctx.imageSmoothingQuality = "high"
+    this.ctx.save()
+    if (this.clipped) {
+      this.ctx.clip(this.clipped)
+    }
     debug("ended" + " (" + (Date.now() - this.start) / 1000 + " secs)")
     if (targetFile) {
       saveCanvas(this.p5canvas, targetFile, 'png');
     }
+    this.ctx.restore()
     noLoop()
+  }
+
+  clipTo (x,y,w,h) {
+    let region = new Path2D();
+    region.rect(x, y, w, h)
+    this.clipped = region
   }
 }
 
-p5.Vector.prototype.radd = function (x,y,z) {
+p5.Vector.prototype.cadd = function (x,y,z) {
   let vx = typeof(x) === "function" ? x() : x
   let vy = typeof(y) === "function" ? y() : y
   let vz = typeof(z) === "function" ? z() : z
@@ -96,6 +100,10 @@ p5.Vector.prototype.radd = function (x,y,z) {
 
 p5.prototype.r = function (x,y,z) {
   return random(x,y,z)
+}
+
+p5.prototype.vector = function (x,y,z) {
+  return createVector(x,y,z)
 }
 
 module.exports = Scene;

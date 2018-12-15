@@ -36,12 +36,11 @@ class Grammar {
     }
     if (this.debug)
       console.log("Starting grammar with " + runStart.name)
-    runStart()
-    //this.fns.push(runStart)
-    //while (this.fns.length > 0) {
-    //  let next = this.fns.shift()
-    //  next()
-    ///}
+    this.fns.push(runStart)
+    while (this.fns.length > 0) {
+      let next = this.fns.shift()
+      next()
+    }
   }
 
   take (...functionNames) {
@@ -50,15 +49,14 @@ class Grammar {
       if (typeof(funName) === "function")
       {
         this.it++
-        funName()
+        this.fns.push(funName)
       }
       else {
         if (funName in this.branches) {
           if (this.debug)
             console.log("Branching to " + this.branches[funName].fun.name)
           this.it++
-          this.branches[funName].fun()
-          //this.fns.push(this.branches[funName].fun)
+          this.fns.push(this.branches[funName].fun)
         }
         else
           throw ("Grammar error: " + funName + " method not found. Did you add() it to the grammar?")

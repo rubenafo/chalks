@@ -15,7 +15,6 @@ class Path {
     this.style = style
     this.instrs = []
     this.parent = scene
-    this.parent.children.push(this)
     this.ctx = scene.ctx
     this.clippedBy = undefined
   }
@@ -32,24 +31,36 @@ class Path {
   }
 
   m(x,y) {
-    let point = typeof(x) === "object" ? x : {x:x, y:y}
+    let point = typeof(x) === "object" ? {x:x.x, y:x.y} : {x:x, y:y}
     this.instrs.push({instr:"m", p:point}); return this
   }
 
   l(x,y) {
-    let point = typeof(x) === "object" ? x : {x:x, y:y}
+    let point = typeof(x) === "object" ? {x:x.x, y:x.y} : {x:x, y:y}
     this.instrs.push({instr:"l", p:point}); return this
   }
 
-  bezier(c1, c2, p2) { this.instrs.push({instr:"b", c1:c1, c2:c2, p2:p2}); return this }
+  bezier(c1, c2, p2) {
+      this.instrs.push({instr:"b",
+        c1:{x:c1.x, y:c1.y, z:c1.z}, c2:{x:c2.x, y:c2.y, z:c2.z}, p2:{x:p2.x, y:p2.y, z:p2.z}});
+      return this
+  }
   bc (p) {
     let previous = this.instrs[this.instrs.length-1]
     if (previous.instr !== "b")
       throw ("Previous instruction to bc() must be bezier()")
-    this.bezier(previous.c1, previous.c2, p)
+    this.bezier(Object.assign({}, previous.c1), Object.assign({}, previous.c2), p)
+    return this
   }
-  arc(p1, p2, r) { this.instrs.push({instr:"a", p1:p1, p2:p2, r:r}); return this}
-  quad(c, p) { this.instrs.push({instr:"q", c:c, p:p}); return this }
+  arc(p1, p2, r) {
+    this.instrs.push({instr:"a",
+      p1:{x:p1.x, y:p1.y, z:p1.z}, p2:{x:p2.x, y:p2.y, z:p2.z}, r:r})
+    return this
+  }
+  quad(c, p) {
+    this.instrs.push({instr:"q", c:{x:c.x, y:c.y, z:c.z}, p:{x:p.x, y:p.y, z:p.z}})
+    return this
+  }
 
   center() {
     let pts = 0;
@@ -97,6 +108,7 @@ class Path {
           instr[k] = this.rotatePoint(instr[k], deg, pt)
       })
     })
+    return this
   }
 
   draw (scale=1) {
@@ -123,11 +135,12 @@ class Path {
        }
     })
     this.applyStyle()
+    return this
    }
 
    applyStyle() {
      if (this.style.fill) {
-       this.ctx.globalAlpha = this.style.alpha || 1
+       this.ctx.globalAlpha = "alpha" in this.style ? this.style.alpha : 1
        this.ctx.fillStyle = this.style.fill
        this.ctx.fill()
      }
@@ -174,7 +187,7 @@ class Path {
          dy = p.y - around.y;
      let newx = cos * dx - sin * dy + around.x
      let newy = sin * dx + cos * dy + around.y
-     return createVector(newx, newy)
+     return {x:newx, y:newy}
    }
 
    circle(p, r=10, sa=0, ea=Math.PI * 2, cw=true) {
@@ -187,9 +200,7 @@ class Path {
    }
 
    line(p0, p1) {
-     this.ctx.beginPath()
      this.m(p0).l(p1)
-     this.applyStyle()
      return this
    }
 
