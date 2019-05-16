@@ -1,6 +1,6 @@
 {
   "name": "chalks",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "A set of handy tools on top of p5js",
   "main": "dist/chalks.min.js",
   "scripts": {
