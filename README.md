@@ -15,6 +15,27 @@ Some of the components:
 * Layout: column points, row points
 * Grammars
 * Color handling: integration with [Chromajs](https://www.npmjs.com/package/chroma-js)
+ 
+## Installation
+```
+npm i chalks
+```
+Keep in mind that _chalks_ requires [p5js](https://www.npmjs.com/package/p5) to be present.   
+You can reference the _chalks.min.js_ library from node_modules folder in your index.html:
+```html
+<script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.js"></script>
+<script language="javascript" src="./node_modules/chalks/dist/chalks.min.js" type="text/javascript"></script>
+<script language="javascript" src="_your_sketch_.js" type="text/javascript"></script>
+```
+Alternatively you can simply clone this repo and add _chalks.min.js_, e.g.   
+Copy the file _chalks.min.js_ from /lib and add it to your _index.html_ after your p5js import.
+
+Example:   
+```html
+<script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.js"></script>
+<script language="javascript" src="./chalks/dist/chalks.min.js" type="text/javascript"></script>
+<script language="javascript" src="_your_sketch_.js" type="text/javascript"></script>
+```
 
 ## Example
 ```javascript
@@ -28,13 +49,4 @@ function draw() {
     points.forEach(p => ch.path({fill:"red", alpha:random(), stroke:"black", strokeWidth:12}, 10).m(p).l(p, p.cadd(150, 50)).draw())
     noLoop()
 }
-```
-## Installation
-Copy the file _chalks.min.js_ from /lib and add it to your _index.html_ after your p5js import.
-
-Example:   
-```html
-<script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.js"></script>
-<script language="javascript" src="./chalks.min.js" type="text/javascript"></script>
-<script language="javascript" src="_your_sketch_.js" type="text/javascript"></script>
 ```
