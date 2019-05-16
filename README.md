@@ -20,11 +20,12 @@ Some of the components:
 ```javascript
 function setup() {
     ch = new Chalks({width: 1000, height: 1000, seed:4}, {fill:"c8c8c8"})
-    points = ch.Attractors.dejon([500,550], -2.24, 0.43, -3.66, -8.23, 250, 3200)
+    points = ch.Parametrics.dejon({x:500, y:900}, -2.24, 0.43, -3.266, -8.23, 250, 6200)
+    console.log(points)
 }
 
 function draw() {
-    points.forEach(p => ch.path({fill:"red", alpha:random(), stroke:"black", strokeWidth:2}, 10).m(p).l(p, p.cadd(10)).draw())
+    points.forEach(p => ch.path({fill:"red", alpha:random(), stroke:"black", strokeWidth:12}, 10).m(p).l(p, p.cadd(150, 50)).draw())
     noLoop()
 }
 ```
