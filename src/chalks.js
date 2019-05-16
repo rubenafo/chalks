@@ -14,7 +14,7 @@ function debug(str) {
 
 class Scene {
 
-  constructor(params, style = {}) {
+  constructor(params = {}, style = {}) {
     this.start = Date.now()
     this.scale = params.scale || 1
     this.width = params.width * this.scale || 1000

@@ -1,13 +1,13 @@
 {
   "name": "chalks",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A set of handy tools on top of p5js",
-  "main": "server.js",
+  "main": "dist/chalks.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "build": "browserify ./src/chalks.js --standalone Chalks | uglifyjs -cm > dist/chalks.min.js",
-    "devBuild": "browserify ./src/chalks.js --standalone Chalks > dist/chalks.dev.min.js"
+    "devBuild": "browserify ./src/chalks.js --standalone Chalks > dist/chalks.dev.js"
   },
   "repository": {
     "type": "git",
