@@ -11,7 +11,7 @@ Some of the components:
     * Rossler
     * Lorentz
     * Dejon
-* Points manipulation (subidivide, subchunks)
+* Points manipulation (subdivide, subchunks)
 * Layout: column points, row points
 * Grammars
 * Color handling: integration with [Chromajs](https://www.npmjs.com/package/chroma-js)
