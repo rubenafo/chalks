@@ -4133,10 +4133,18 @@ class Scene {
   constructor(params = {}, style = {}) {
     this.start = Date.now()
     this.scale = params.scale || 1
-    this.width = params.width * this.scale || 1000
-    this.height = params.height * this.scale || 1000
-    this.p5canvas = createCanvas(this.width,this.height)
-
+    if (params.width && params.height) { // create our own canvas
+        this.width = params.width * this.scale 
+        this.height = params.height * this.scale
+        this.p5canvas = createCanvas(this.width,this.height)
+        debug (`creating canvas ${this.width}x${this.height}`)
+    }
+    else { // reuse existing p5js canvas
+        this.width = params.width * this.scale || p5.instance.canvas.width
+        this.height = params.height * this.scale || p5.instance.canvas.height
+        this.p5canvas = p5.instance.canvas
+        debug (`reusing existing canvas ${this.width}x${this.height}`)
+    }
     this.canvas = document.getElementById('defaultCanvas0');
     this.ctx = this.canvas.getContext("2d")
     this.seed = params.seed ? params.seed : (Math.random() * 10000).toString().substr(5, 8)
