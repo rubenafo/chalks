@@ -7,6 +7,7 @@ let Points = require ("./Points")
 
 let chroma = require ("chroma-js")
 global.chroma = chroma;
+
 // Provide debug messages in the console
 function debug(str) {
   console.log("Chalks:", str)
@@ -57,25 +58,21 @@ class Scene {
   }
 
   path(style) {
-    return new Path(this, style)
+    return new Path(this, style);
   }
 
   // Linear gradient: p0, p1, stops as [[num, color]]
   lgrad(p0, p1, colors) {
     let grad = this.ctx.createLinearGradient(0, 0, 1000, 1000)
-    colors.forEach(c => {
-      grad.addColorStop(c[0], c[1])
-    })
-    return grad
+    colors.forEach(c => grad.addColorStop(c[0], c[1]));
+    return grad;
   }
 
   // Radial gradient
   rgrad(p0, r0, p1, r1, colors) {
     let grad = this.ctx.createRadialGradient(p0.x, p0.y, r0, p1.x, p1.y, r1)
-    colors.forEach(c => {
-      grad.addColorStop(c[0], c[1])
-    })
-    return grad
+    colors.forEach(c => grad.addColorStop(c[0], c[1]))
+    return grad;
   }
 
   draw(loops=1, targetFile) {
@@ -99,6 +96,9 @@ class Scene {
   }
 }
 
+/**
+ * Copy + add. Creates a new vector and adds x,y,z
+ */
 p5.Vector.prototype.cadd = function (x,y,z) {
   let vx = typeof(x) === "function" ? x() : x
   let vy = typeof(y) === "function" ? y() : y
@@ -106,10 +106,16 @@ p5.Vector.prototype.cadd = function (x,y,z) {
   return createVector(this.x, this.y, this.z).add(vx, vy, vz)
 }
 
+/**
+ * Shortcut for random function, r(x,y,z)
+ */
 p5.prototype.r = function (x,y,z) {
   return random(x,y,z)
 }
 
+/**
+ * Shortcut for createVector function, createVector(x,y,z)
+ */
 p5.prototype.vector = function (x,y,z) {
   return createVector(x,y,z)
 }

@@ -2816,7 +2816,7 @@ module.exports = Grammar
 },{}],3:[function(require,module,exports){
 /**
 * @license
-* Copyright 2016 Ruben Afonso, rubenaf.com
+* Copyright 2019 Ruben Afonso, rubenaf.com
 * This source code is licensed under the Apache license (see LICENSE file)
 **/
 
@@ -2950,7 +2950,7 @@ module.exports = Layout;
 },{"./Masonry":4}],4:[function(require,module,exports){
 /**
 * @license
-* Copyright 2016 Ruben Afonso, rubenaf.com
+* Copyright 2019 Ruben Afonso, rubenaf.com
 * This source code is licensed under the Apache license (see LICENSE file)
 **/
 
@@ -3624,7 +3624,7 @@ module.exports = (function(){
 },{}],6:[function(require,module,exports){
 /**
  * @license
- * Copyright 2018 Ruben Afonso, rubenaf.com
+ * Copyright 2019 Ruben Afonso, rubenaf.com
  * This source code is licensed under the Apache license (see LICENSE file)
  **/
 
@@ -3857,6 +3857,8 @@ module.exports = Parametrics
 "use strict"
 
 let chroma = require ("chroma-js")
+let Points = require ("./Points").Points
+
 
 class Path {
 
@@ -3954,7 +3956,7 @@ class Path {
     this.instrs.forEach (instr => {
       Object.keys(instr).forEach(k => {
         if ( k !== "instr")
-          instr[k] = this.rotatePoint(instr[k], deg, pt)
+          instr[k] = Points.rotatePoint(instr[k], deg, pt)
       })
     })
     return this
@@ -3983,11 +3985,11 @@ class Path {
          case "arc": this.ctx.arc(instr.p.x*scale, instr.p.y*scale, instr.r, instr.sa, instr.ea, instr.cw); break
        }
     })
-    this.applyStyle()
+    this._applyStyle()
     return this
    }
 
-   applyStyle() {
+   _applyStyle() {
      if (this.style.fill) {
        this.ctx.globalAlpha = "alpha" in this.style ? this.style.alpha : 1
        this.ctx.fillStyle = this.style.fill
@@ -4028,17 +4030,6 @@ class Path {
      return this
    }
 
-   rotatePoint (p, deg, around) {
-     let radians = deg * Math.PI / 180.0,
-         cos = Math.cos(radians),
-         sin = Math.sin(radians)
-     let dx = p.x - around.x,
-         dy = p.y - around.y;
-     let newx = cos * dx - sin * dy + around.x
-     let newy = sin * dx + cos * dy + around.y
-     return {x:newx, y:newy}
-   }
-
    circle(p, r=10, sa=0, ea=Math.PI * 2, cw=true) {
      this.instrs.push({instr:"arc", p:p, r:r, sa:sa, ea:ea, cw:cw})
      return this
@@ -4061,7 +4052,7 @@ class Path {
 
 module.exports = Path
 
-},{"chroma-js":1}],8:[function(require,module,exports){
+},{"./Points":8,"chroma-js":1}],8:[function(require,module,exports){
 
 "use strict"
 
@@ -4108,6 +4099,17 @@ class Points {
       })
       return closest
     }
+
+    static rotatePoint (p, deg, around) {
+        let radians = deg * Math.PI / 180.0,
+            cos = Math.cos(radians),
+            sin = Math.sin(radians)
+        let dx = p.x - around.x,
+            dy = p.y - around.y;
+        let newx = cos * dx - sin * dy + around.x
+        let newy = sin * dx + cos * dy + around.y
+        return {x:newx, y:newy}
+      }
 }
 
 module.exports = Points
@@ -4123,6 +4125,7 @@ let Points = require ("./Points")
 
 let chroma = require ("chroma-js")
 global.chroma = chroma;
+
 // Provide debug messages in the console
 function debug(str) {
   console.log("Chalks:", str)
@@ -4173,25 +4176,21 @@ class Scene {
   }
 
   path(style) {
-    return new Path(this, style)
+    return new Path(this, style);
   }
 
   // Linear gradient: p0, p1, stops as [[num, color]]
   lgrad(p0, p1, colors) {
     let grad = this.ctx.createLinearGradient(0, 0, 1000, 1000)
-    colors.forEach(c => {
-      grad.addColorStop(c[0], c[1])
-    })
-    return grad
+    colors.forEach(c => grad.addColorStop(c[0], c[1]));
+    return grad;
   }
 
   // Radial gradient
   rgrad(p0, r0, p1, r1, colors) {
     let grad = this.ctx.createRadialGradient(p0.x, p0.y, r0, p1.x, p1.y, r1)
-    colors.forEach(c => {
-      grad.addColorStop(c[0], c[1])
-    })
-    return grad
+    colors.forEach(c => grad.addColorStop(c[0], c[1]))
+    return grad;
   }
 
   draw(loops=1, targetFile) {
@@ -4215,6 +4214,9 @@ class Scene {
   }
 }
 
+/**
+ * Copy + add. Creates a new vector and adds x,y,z
+ */
 p5.Vector.prototype.cadd = function (x,y,z) {
   let vx = typeof(x) === "function" ? x() : x
   let vy = typeof(y) === "function" ? y() : y
@@ -4222,10 +4224,16 @@ p5.Vector.prototype.cadd = function (x,y,z) {
   return createVector(this.x, this.y, this.z).add(vx, vy, vz)
 }
 
+/**
+ * Shortcut for random function, r(x,y,z)
+ */
 p5.prototype.r = function (x,y,z) {
   return random(x,y,z)
 }
 
+/**
+ * Shortcut for createVector function, createVector(x,y,z)
+ */
 p5.prototype.vector = function (x,y,z) {
   return createVector(x,y,z)
 }

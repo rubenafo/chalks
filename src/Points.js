@@ -44,6 +44,17 @@ class Points {
       })
       return closest
     }
+
+    static rotatePoint (p, deg, around) {
+        let radians = deg * Math.PI / 180.0,
+            cos = Math.cos(radians),
+            sin = Math.sin(radians)
+        let dx = p.x - around.x,
+            dy = p.y - around.y;
+        let newx = cos * dx - sin * dy + around.x
+        let newy = sin * dx + cos * dy + around.y
+        return {x:newx, y:newy}
+      }
 }
 
 module.exports = Points

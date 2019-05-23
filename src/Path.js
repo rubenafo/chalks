@@ -8,6 +8,8 @@
 "use strict"
 
 let chroma = require ("chroma-js")
+let Points = require ("./Points").Points
+
 
 class Path {
 
@@ -105,7 +107,7 @@ class Path {
     this.instrs.forEach (instr => {
       Object.keys(instr).forEach(k => {
         if ( k !== "instr")
-          instr[k] = this.rotatePoint(instr[k], deg, pt)
+          instr[k] = Points.rotatePoint(instr[k], deg, pt)
       })
     })
     return this
@@ -134,11 +136,11 @@ class Path {
          case "arc": this.ctx.arc(instr.p.x*scale, instr.p.y*scale, instr.r, instr.sa, instr.ea, instr.cw); break
        }
     })
-    this.applyStyle()
+    this._applyStyle()
     return this
    }
 
-   applyStyle() {
+   _applyStyle() {
      if (this.style.fill) {
        this.ctx.globalAlpha = "alpha" in this.style ? this.style.alpha : 1
        this.ctx.fillStyle = this.style.fill
@@ -177,17 +179,6 @@ class Path {
      let deg = Math.atan2(ydiff, xdiff) * (180 / Math.PI)
      this.rotate(deg, m)
      return this
-   }
-
-   rotatePoint (p, deg, around) {
-     let radians = deg * Math.PI / 180.0,
-         cos = Math.cos(radians),
-         sin = Math.sin(radians)
-     let dx = p.x - around.x,
-         dy = p.y - around.y;
-     let newx = cos * dx - sin * dy + around.x
-     let newy = sin * dx + cos * dy + around.y
-     return {x:newx, y:newy}
    }
 
    circle(p, r=10, sa=0, ea=Math.PI * 2, cw=true) {
