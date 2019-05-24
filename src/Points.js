@@ -35,8 +35,9 @@ class Points {
     static closest (point, listPoints) {
       let closest = undefined
       let distance = 1e10
-      listPoints.forEach (p => {
-        let d = Math.sqrt(Math.pow(p.x,2) + Math.pow(p.y, 2))
+      let diffPoints = listPoints.filter(p => p.x !== point.x && p.y !== point.y)
+      diffPoints.forEach (p => {
+        let d = Math.sqrt(Math.pow(point.x - p.x, 2) + Math.pow(point.y - p.y, 2))
         if (d < distance) {
           distance = d
           closest = p
