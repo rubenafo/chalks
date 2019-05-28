@@ -1,9 +1,9 @@
 # Chalks
-A thin library on top of p5js  containing methods to manipulate points and draw figures.   
+A thin library on top of p5js containing methods to manipulate points and draw figures.   
 Chalks is fully compatible with p5js and just provides some handy tools to simplify the creation process by accessing the p5js _canvas2d_ object.
 
 Some of the components:
-* Simplified path object to define styles and define curves in a plain declarative way
+* Simplified path object to define styles and curves in a functional, imperative way.
 * Attractors
     * Butterfly curve
     * Hypocycloid
@@ -12,16 +12,17 @@ Some of the components:
     * Lorentz
     * Dejon
 * Points manipulation (subdivide, subchunks)
-* Layout: column points, row points
+* Layout functions: column points, row points
 * Grammars
-* Color handling: integration with [Chromajs](https://www.npmjs.com/package/chroma-js)
+* Color handling using [Chromajs](https://www.npmjs.com/package/chroma-js)
+* Curves manipulation using [Bezier-js](https://www.npmjs.com/package/bezier-js)
  
 ## Installation
 ```
 npm i chalks
 ```
 Keep in mind that _chalks_ requires [p5js](https://www.npmjs.com/package/p5) to be present.   
-You can reference the _chalks.min.js_ library from node_modules folder in your index.html:
+You can reference the _chalks.min.js_ library contained in the node_modules folder in your index.html:
 ```html
 <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.1/p5.js"></script>
 <script language="javascript" src="./node_modules/chalks/dist/chalks.min.js" type="text/javascript"></script>
