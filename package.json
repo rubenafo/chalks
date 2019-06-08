@@ -28,8 +28,6 @@
   },
   "homepage": "https://github.com/rubenafo/chalks#readme",
   "dependencies": {
-    "npm": "^6.4.1",
-    "yarn": "^1.10.1"
   },
   "devDependencies": {
     "babel-preset-env": "^1.7.0",
