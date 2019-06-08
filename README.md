@@ -1,21 +1,21 @@
 # Chalks
-A thin library on top of p5js containing methods to manipulate points and draw figures.   
+A thin, independent library on top of p5js containing methods to manipulate points and draw figures.   
 Chalks is fully compatible with p5js and just provides some handy tools to simplify the creation process by accessing the p5js _canvas2d_ object.
 
 Some of the components:
-* Simplified path object to define styles and curves in a functional, imperative way.
-* Attractors
+* Simplified path object to define styles and curves in a functional, declarative way.
+* Generative:
     * Butterfly curve
     * Hypocycloid
     * Rose
     * Rossler
     * Lorentz
     * Dejon
+    * Voronoi points (thanks to [voronoi](https://npmjs.com/package/voronoi))
 * Points manipulation (subdivide, subchunks)
-* Layout functions: column points, row points
+* Layout functions: column, rows, masonry
 * Grammars
 * Color handling using [Chromajs](https://www.npmjs.com/package/chroma-js)
-* Curves manipulation using [Bezier-js](https://www.npmjs.com/package/bezier-js)
  
 ## Installation
 ```

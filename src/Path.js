@@ -7,9 +7,7 @@
 
 "use strict"
 
-let chroma = require ("chroma-js")
 let Points = require ("./Points")
-
 
 class Path {
 
