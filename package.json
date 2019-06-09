@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "build": "browserify ./src/chalks.js --standalone Chalks | uglifyjs -cm > dist/chalks.min.js && browserify ./src/chalks.js --standalone Chalks > dist/chalks.dev.js"
+    "build": "browserify ./src/chalks.js --standalone Chalks | uglifyjs -cm > dist/chalks.min.js && browserify ./src/chalks.js --standalone Chalks > dist/chalks.dev.js",
+    "docs": "node ./node_modules/jsdoc/jsdoc.js ./dist/chalks.dev.js -d docs"
   },
   "repository": {
     "type": "git",
@@ -35,7 +36,8 @@
     "chroma-js": "^1.4.0",
     "mocha": "^5.2.0",
     "png-metadata": "^1.0.2",
-    "voronoi":"^1.0.0",
-    "uglify-es": "^3.3.9"
+    "uglify-es": "^3.3.9",
+    "voronoi": "^1.0.0",
+    "jsdoc": "3.5.5"
   }
 }
