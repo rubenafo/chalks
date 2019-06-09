@@ -8,11 +8,22 @@
 
 let voronoi = require ("voronoi")
 
+/**
+ * @classdesc This module contains functions to generate points in an area
+ * @class
+ */
 class Parametrics {
 
-  static voronoi (origin, w, h, points) {
+    /**
+     * Returns the voronoi data (check https://github.com/gorhill/Javascript-Voronoi#usage) for details
+     * @param {object} origin - {x,y} point representing the top right corner of the  
+     * @param {number} w width of the voronoi area
+     * @param {number} h height of the voronoi area
+     * @param {number} sites list of {x,y} points representing the initial cell centers
+     */
+  static voronoi (origin, w, h, sites) {
     let bbox = {xl:origin.x, xr:origin.x + w, yt:origin.y, yb:origin.y + h}
-    return new voronoi().compute(points, bbox)
+    return new voronoi().compute(sites, bbox)
   }
 
   /**
