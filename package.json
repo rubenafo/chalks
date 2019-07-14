@@ -1,7 +1,7 @@
 {
   "name": "chalks",
-  "version": "0.1.5",
-  "description": "A set of handy tools on top of p5js",
+  "version": "0.2.0",
+  "description": "A set of utility methods and classes on top of p5js",
   "main": "dist/chalks.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -28,8 +28,7 @@
     "url": "https://github.com/rubenafo/chalks/issues"
   },
   "homepage": "https://github.com/rubenafo/chalks#readme",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel-preset-env": "^1.7.0",
     "browserify": "^16.2.2",

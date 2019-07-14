@@ -4,6 +4,7 @@ let Path = require("./Path")
 let Parametrics = require("./Parametrics")
 let Grammar = require ("./Grammar")
 let Points = require ("./Points")
+let Particles = require ("./particles/ParticleSystem")
 
 let chroma = require ("chroma-js")
 global.chroma = chroma;
@@ -39,12 +40,16 @@ class Scene {
     this._modules()
   }
 
+  /**
+   * Modules exported from chalks.js module
+   */
   _modules() {
     this.Layout = Layout
     this.Path = Path
     this.Parametrics = Parametrics
     this.Grammar = Grammar
     this.Points = Points
+    this.Particles = Particles
   }
 
   drawBackground(width, height, style) {

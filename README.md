@@ -16,6 +16,7 @@ Some of the components:
 * Layout functions: column, rows, masonry
 * Grammars
 * Color handling using [Chromajs](https://www.npmjs.com/package/chroma-js)
+* Particle System: integrates [node-particles](https://github.com/rubenafo/node-particles)
  
 ## Installation
 ```

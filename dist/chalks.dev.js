@@ -5861,6 +5861,7 @@ let Path = require("./Path")
 let Parametrics = require("./Parametrics")
 let Grammar = require ("./Grammar")
 let Points = require ("./Points")
+let Particles = require ("./particles/ParticleSystem")
 
 let chroma = require ("chroma-js")
 global.chroma = chroma;
@@ -5896,12 +5897,16 @@ class Scene {
     this._modules()
   }
 
+  /**
+   * Modules exported from chalks.js module
+   */
   _modules() {
     this.Layout = Layout
     this.Path = Path
     this.Parametrics = Parametrics
     this.Grammar = Grammar
     this.Points = Points
+    this.Particles = Particles
   }
 
   drawBackground(width, height, style) {
@@ -6015,5 +6020,754 @@ p5.prototype.vector = function (x,y,z) {
 module.exports = Scene;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./Grammar":3,"./Layout":4,"./Parametrics":7,"./Path":8,"./Points":9,"chroma-js":1}]},{},[10])(10)
+},{"./Grammar":3,"./Layout":4,"./Parametrics":7,"./Path":8,"./Points":9,"./particles/ParticleSystem":14,"chroma-js":1}],11:[function(require,module,exports){
+
+
+"use strict";
+
+let Point = require ("./Point.js").Point;
+let Particle = require ("./Particle.js").Particle;
+let Random = require ("./Random.js").Random;
+
+class Emitter {
+
+   // Creates a new Emitter given a point in space and emission velocity
+   constructor (point,velocity, xsize, ysize, particleLife, spread, emissionRate) {
+    this.position     = point;
+    this.velocity     = velocity;
+    this.xsize        = xsize;
+    this.ysize        = ysize;
+    this.particleLife = particleLife || -1;
+    this.spread       = spread === undefined? Math.PI / 32 : spread;
+    this.emissionRate = emissionRate || 1;
+    this.jitter       = 0.05;
+    this.rand         = new Random();
+  }
+
+  setPos (xy) { this.position = xy; return this; }
+  setSpeed (sp) { this.velocity = sp; return this; }
+  setSize (xy) { this.xsize = xy.x; this.ysize = xy.y; return this; }
+  setJitter (x) { this.jitter = x; return this; }
+  setSpread (x) { this.spread = x; return this; }
+  setLifetime (x) { this.particleLife = x; return this; }
+
+  // Sets the distribution function
+  seed (val) {
+    if (val !== undefined) {
+      this.rand.setSeed(val);
+    }
+    return this;
+  }
+
+  // Adds a new particle using the Emitter position and velocity as starting point.
+  addParticle() {
+    var pPosition = this.position.copy();
+    pPosition.x += this.rand.random() * this.xsize;
+    pPosition.y += this.rand.random() * this.ysize;
+    var particle = new Particle (pPosition,
+                                 Point.fromAngle(this.velocity.getAngle() - this.spread * this.rand.random()
+                                                  - (0 * this.spread * 2),
+                                  this.velocity.getMagnitude())
+    );
+    particle.ttl = this.particleLife;
+    return particle;
+  }
+};
+
+module.exports.Emitter = Emitter;
+
+},{"./Particle.js":13,"./Point.js":15,"./Random.js":16}],12:[function(require,module,exports){
+
+"use strict";
+
+let Point = require ("./Point.js").Point;
+
+  class Field {
+
+    // Creates a new Field given a point and a mass. Use a negative mass for attractors and positive for repulsive behaviour.
+    constructor (point, mass, decay) {
+      this.position   = point || new Point(0,0) ;
+      this.mass       = mass || 100;
+      this.decayVal   = decay || 0;
+    }
+
+    decay () {
+      this.mass = this.mass - this.decayVal;
+    }
+}
+module.exports.Field = Field;
+
+},{"./Point.js":15}],13:[function(require,module,exports){
+
+"use strict";
+
+let Point = require ("./Point.js").Point;
+
+
+  class Particle {
+
+    // Creates a new Particle given a x,y point and a velocity
+    constructor (point,velocity){
+      this.position     = point || new Point(0,0);
+      this.velocity     = velocity || new Point(0,0);
+      this.initialVelocity = this.velocity.copy();
+      this.acceleration = new Point(0,0);
+      this.ttl          = -1;
+      this.lived        = 0;
+      this.traceRecord = [];
+      this.traceRecord.push(this.position.copy());
+    }
+
+  // Updates the acceleration of this particle taking into account the fields surrounding the particle
+  submitToFields (fields) {
+    var that = this;
+    var totalAccelerationX = 0;
+    var totalAccelerationY = 0;
+    fields.forEach (function(field) {
+      var vectorX = field.position.x - that.position.x;
+      var vectorY = field.position.y - that.position.y;
+      var distance = Math.pow((vectorX*vectorX+vectorY*vectorY),0.5);
+      //var normForce = new Point (vectorX/distance, vectorY/distance);
+      var force = field.mass  / Math.pow(distance,2);
+      totalAccelerationX += vectorX * force;
+      totalAccelerationY += vectorY * force;
+    });
+    this.acceleration = new Point(totalAccelerationX,totalAccelerationY);
+  }
+
+  // Moves this particle according to its position, its velocity and its acceleration
+  move() {
+    //this.velocity.x = this.initialVelocity.x;
+    //this.velocity.y = this.initialVelocity.y;
+    this.velocity.x += this.acceleration.x;
+    this.velocity.y += this.acceleration.y;
+    this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y;
+    this.traceRecord.push (this.position.copy());
+  }
+
+  // Returns the position of this particle
+  getPos() { return this.position; }
+
+  // Returns the trace history of the particle
+  getTrace() { return this.traceRecord; }
+};
+module.exports.Particle = Particle;
+
+},{"./Point.js":15}],14:[function(require,module,exports){
+
+"use strict";
+
+let Point = require ("./Point.js").Point;
+let Field = require ("./Field.js").Field;
+let Emitter = require ("./Emitter.js").Emitter;
+let Particle = require ("./Particle.js").Particle;
+let Random = require ("./Random.js").Random;
+
+class ParticleSystem {
+
+  // Creates a new ParticleSystem
+  constructor(points) {
+    this.maxParticles = 2000;
+    this.particles = [];
+    this.emitters = [];
+    this.fields = [];
+    this.elapsed = 0;
+    this.gen = false;
+    this.baseOrigin = new Point(0,0);
+    this.rand = new Random();
+    var that = this;
+    if (points !== undefined) {
+      points.forEach(function (point) {
+        that.particles.push(new Particle(point));
+      });
+    }
+    return this;
+  };
+
+  // Sets the origin of the Particle System
+  setOrigin (point) {
+    this.baseOrigin = point;
+    return this;
+  }
+
+  // Sets the distribution function
+  seed (val) {
+    if (val !== undefined) {
+      this.rand.setSeed(val);
+    }
+    return this;
+  }
+
+  // Adds a new Emitter, given a point in space and a velocity
+  addEmitter(point, velocity, xsize, ysize, particleLife, spread, emissionRate) {
+    this.emitters.push(new Emitter(point, velocity, xsize, ysize, particleLife, spread, emissionRate).seed(this.rand.random()));
+    return this;
+  }
+
+  // Adds a new Field, given a point in space and its mass
+  addField (point, mass, decay) {
+    this.fields.push (new Field(point, mass, decay));
+    return this;
+  }
+
+  // Sets the maximum number of particles in the system
+  setMaxParticles (max) {
+    this.maxParticles = max;
+    return this;
+  }
+
+  bounded (width, height) {
+    this.maxHeight = height;
+    this.maxWidth = width;
+    return this;
+  }
+
+  // Cleans the traces that are out of the boundaries
+  clean () {
+    if (this.maxHeight === undefined || this.maxWidth == undefined)
+      return this;
+    var that = this;
+    this.particles.forEach (function (part, i) { // check the traces
+        var newTraces = [];
+        part.getTrace().forEach (function (pos, i) {
+          if ( (pos.x <= that.baseOrigin.x + that.maxWidth) && (pos.y <= that.maxHeight + that.baseOrigin.y)) {
+            newTraces.push(pos);
+          }
+        });
+        part.traceRecord = newTraces;
+    });
+
+    var i = this.particles.length; // a particle out ot the limits without traces is removed
+    while (i--) {
+      if (!this.particles[i].getTrace().length)
+        this.particles.splice(i,1);
+    }
+    return this;
+  }
+
+  // Checks all the registered emitters, getting new particles from them.
+  // This method shouldn't be called directly, use evolve instead()
+  addNewParticles () {
+    var that = this;
+    var emitParticles = function (emitter) {
+      for (var i = 0; i < emitter.emissionRate; i++)
+        that.particles.push(emitter.addParticle());
+      }
+    this.emitters.forEach(emitParticles);
+    return this;
+  }
+
+  // Returns the particles in the system
+  getParticles() { return this.particles; }
+
+  // Returns the total particles count
+  getParticleCount() {
+    return this.particles.length;
+  }
+
+  // Returns the Emitters count
+  getEmitterCount() {
+    return this.emitters.length;
+  }
+
+  // Returns the Fields count
+  getFieldCount() {
+    return this.fields.length;
+  }
+
+  // Returns the particle's list
+  getParticles () { return this.particles; }
+
+  // This method triggers a particle generation on each registered Emitter and then updates
+  // the particles position according to the registered Fields.
+  evolve (steps) {
+    var fields = this.fields;
+    for (var step = 0; step < steps; step++) {
+      if (this.particles.length < this.maxParticles)
+        this.addNewParticles();
+      this.particles.forEach (function(part) {
+        part.submitToFields(fields);
+        part.move();
+      });
+      fields.forEach(f => f.decay());
+    };
+    return this.clean();
+  }
+};
+
+module.exports.ParticleSystem = ParticleSystem;
+module.exports.Point = Point;
+module.exports.Field = Field;
+module.exports.Emitter = Emitter;
+module.exports.Particle = Particle;
+
+},{"./Emitter.js":11,"./Field.js":12,"./Particle.js":13,"./Point.js":15,"./Random.js":16}],15:[function(require,module,exports){
+  "use strict";
+
+  class Point {
+
+   // Instantiates a new Point given x and y
+   constructor (x,y) {
+    this.x = x || 0;
+    this.y = y || 0;
+   }
+
+   // Returns the magnitude of a point considering it a vector starting from (0,0)
+   getMagnitude () {
+    return Math.sqrt(this.x * this.x + this.y * this.y);
+   }
+
+   unit () {
+     var mag = this.getMagnitude();
+     return new Point (this.x / mag, this.y / mag);
+   }
+
+   pow () {
+    return Math.pow(this.x, 2) + Math.pow(this.y, 2);
+   }
+
+    // Multiplies the point
+    multiply (scaleFactor) {
+      if (typeof(scaleFactor) === 'object')
+      {
+        this.x *= scaleFactor.x;
+        this.y *= scaleFactor.y;
+      }
+      else {
+        this.x *= scaleFactor;
+        this.y *= scaleFactor;
+      }
+      return this;
+    }
+
+    // Translates the point
+    add (increased) {
+      if (typeof(increased) === 'object')
+      {
+        this.x += increased.x;
+        this.y += increased.y;
+      }
+      else {
+        this.x += increased;
+        this.y += increased;
+      }
+      return this;
+    }
+
+    limit (max) {
+    	if (this.getMagnitude() > max) {
+    	  var unit = this.unit();
+    	  return new Point(unit.x * max, unit.y * max);
+      }
+      return this.copy();
+    }
+
+    dec (decrease) {
+      if (typeof(decrease) === 'object')
+      {
+        this.x -= decrease.x;
+        this.y -= decrease.y;
+      }
+      else {
+        this.x -= decrease;
+        this.y -= decrease;
+      }
+      return this;
+    }
+
+    div (factor) {
+      return new Point(this.x / factor, this.y / factor);
+    }
+
+    // Returns a new Point
+    vectorTo(vector) {
+      return new Point(vector.x - this.x, vector.y - this.y);
+    }
+
+    // Given a point, checks if it's within the bounds of this vector
+    withinBounds (point, size) {
+      var radius = ~~(size/2)  + 1;
+      return this.x >= point.x - radius &&
+             this.x <= point.x + radius &&
+             this.y >= point.y - radius &&
+             this.y <= point.y + radius ;
+    }
+
+    // Calculates the angle of this point relative to (0,0)
+    getAngle() {
+      var ratio = 0;
+      var offset = 0;
+      if (this.x > 0) {
+        if (this.y > 0) {
+          offset = 0;
+          ratio = this.y / this.x;
+        } else {
+          offset = (3 * Math.PI)/2;
+          ratio = this.x / this.y;
+        }
+      } else {
+        if (this.y > 0) {
+          offset = Math.PI / 2;
+          ratio = this.x / this.y;
+        } else {
+          offset = Math.PI;
+          ratio = this.y / this.x;
+        }
+      }
+      var angle = Math.atan(Math.abs(ratio)) + offset;
+      return angle;
+    }
+
+    // Returns the angle degrees of this point relative to (0,0)
+    getAngleDegrees() {
+      return this.getAngle() * 180 / Math.PI;
+    }
+
+    // Returns a jittered point around the current one
+    jitter(jitterAmount, Rnd) {
+      randFunc = Rnd ? Rnd.random : Math.random;
+      return new Point(
+        this.x + this.x * jitterAmount * randFunc(),
+        this.y + this.y * jitterAmount * randFunc()
+      );
+    }
+
+    // Copies a Point
+    copy() {
+      return new Point(this.x,this.y);
+    }
+
+    static euc2d (source, target) {
+      let xdist = Math.pow(source.x - target.x);
+      let ydist = Math.pow(source.y - target.y);
+      return Math.sqrt (xdist + ydist);
+    }
+
+    // Returns a new point given the angle from (0,0) and a certain magnitude
+    static fromAngle (angle, magnitude) {
+      var p = new Point(magnitude * Math.cos(angle), magnitude * Math.sin(angle));
+      return p;
+    }
+};
+module.exports.Point = Point;
+
+},{}],16:[function(require,module,exports){
+
+"use strict";
+
+const E = Math.E;
+const PI = Math.PI;
+const PI_2 = PI / 2;
+
+class Random {
+
+    constructor (seed) {
+      if (typeof(seed) === "string") {
+        var i = seed.length;
+        this.seed = 0;
+        while (i--) {
+          this.seed += seed.charCodeAt(i);
+        }
+      }
+      else
+        this.seed = seed !== undefined ? seed : Math.random();
+    }
+
+    setSeed (seed) {
+      if (seed)
+        this.seed = seed;
+    }
+
+    random (lower, upper) {
+      var x = Math.sin(this.seed++) * 10000;
+      if (upper === undefined) {
+        if (lower === undefined) { // both undefined, assume (0,1)
+          return x - Math.floor(x);
+        }
+        else { // we only have lower, assume (0,lower)
+          return (x - Math.floor(x)) * lower;
+        }
+      }
+      else {
+        return lower + ((x - Math.floor(x)) * (upper-lower))
+      }
+    }
+
+	rint (lower, upper) {
+		return Math.round(this.random(lower, upper));
+	}
+
+    arcsine (min, max) {
+        var q = Math.sin(PI_2 * this.uniform(0, 1));
+
+        return min + (max - min) * q * q;
+    };
+
+    beta (v, w, min, max) {
+        if (v < w) {
+            return max - (max - min) * this.beta(w, v, 0, 1);
+        }
+        var y1 = this.gamma(0, 1, v),
+            y2 = this.gamma(0, 1, w);
+
+        return min + (max - min) * y1 / (y1 + y2);
+    };
+
+    cauchy (a, b) {
+      return a + b * Math.tan(PI * this.uniform(-0.5, 0.5))
+    };
+
+     chiSquare (df) {
+        return this.gamma(0, 2, 0.5 * df);
+    };
+
+     cosine (min, max) {
+        var a = 0.5 * (min + max),
+            b = (max - min) / PI;
+
+        return a + b * Math.asin(this.uniform(-1, 1));
+    };
+
+     doubleLog (min, max) {
+        var a = 0.5 * (min + max),
+            b = 0.5 * (max - min);
+        if (this.bernoulli(0.5) === 0) {
+            b = -b;
+        }
+
+        return a + b * this.uniform(0, 1) * this.uniform(0, 1);
+    };
+
+     erlang (b, c) {
+        var prod = 1.0;
+        var i = 1;
+
+        for (i = 1; i < c; i++) {
+            prod *= this.uniform(0, 1);
+        }
+
+        return -b * Math.log(prod);
+    };
+
+     exponential (a, b) {
+        return a - b * Math.log(this.uniform(0, 1));
+    };
+
+     extremeValue (a, b) {
+        return a + b * Math.log(-Math.log(this.uniform(0, 1)));
+    };
+
+     fRatio (v, w) {
+        return (this.chiSquare(v) / v) / (this.chiSquare(w) / w);
+    };
+
+     gamma (a, b, c) {
+        var A = 1 / Math.sqrt(2 * c - 1),
+            B = c - Math.log(4),
+            Q = c + 1 / A,
+            T = 4.5,
+            D = 1 + Math.log(T),
+            C = 1 + c / E;
+
+        if (c < 1) {
+            while (true) {
+                var p = C * this.uniform(0, 1);
+                if (p > 1) {
+                    var y = -Math.log((C - p) / c);
+                    if (this.uniform(0, 1) <= Math.pow(y, c - 1)) {
+                        return a + b * y;
+                    }
+                } else {
+                    var y = Math.pow(p, 1 / c);
+                    if (this.uniform(0, 1) <= Math.exp(-y)) {
+                        return a + b * y;
+                    }
+                }
+            }
+        } else if (c == 1.0) {
+            return this.exponential(a, b);
+        } else {
+            while (true) {
+                var p1 = this.uniform(0, 1),
+                    p2 = this.uniform(0, 1),
+                    v = A * Math.log(p1 / (1 - p1)),
+                    y = c * Math.exp(v),
+                    z = p1 * p1 * p2,
+                    w = B + Q * v - y;
+                if (w + D - T * z > 0 || w >= Math.log(z)) {
+                    return a + b * y
+                }
+            }
+        }
+    };
+
+     laplace (a, b) {
+        if (this.bernoulli(0.5) == 1) {
+            return a + b * Math.log(this.uniform(0, 1));
+        } else {
+            return a - b * Math.log(this.uniform(0, 1));
+        }
+    };
+
+     logarithmic (min, max) {
+        var a = min,
+            b = max - min;
+
+        return a + b * this.uniform(0, 1) * this.uniform(0, 1);
+    };
+
+     logistic (a, b) {
+        return a - b * Math.log(1 / this.uniform(0, 1) - 1);
+    };
+
+     lognormal (a, mu, sigma) {
+        return a + Math.exp(this.normal(mu, sigma));
+    };
+
+     normal (mu, sigma) {
+        var p , p1, p2;
+        do {
+            p1 = this.uniform(-1, 1);
+            p2 = this.uniform(-1, 1);
+            p = p1 * p1 + p2 * p2;
+        } while (p >= 1);
+
+        return mu + sigma * p1 * Math.sqrt(-2 * Math.log(p) / p);
+    };
+
+     parabolic (min ,max) {
+        var parabola = function (x, min, max) {
+            if (x < min || x > max) {
+                return 0.0;
+            }
+
+            var a = 0.5 * (min + max),
+                b = 0.5 * (max - min),
+                yMax = 3 / (4 * b);
+
+            return yMax * (1 - (x - a) * (x - a) / (b * b));
+        };
+
+        var a = 0.5 * (min  + max),
+            yMax = parabola(a, min + max);
+
+        return this.userSpecified(parabola, min ,max, 0, yMax);
+    };
+
+     pareto (c) {
+        return Math.pow(this.uniform(0, 1), -1 / c);
+    };
+
+     pearson5 (b, c) {
+        return 1 / this.gamma(0, 1 / b, c);
+    };
+
+     pearson6 (b, v, w) {
+        return this.gamma(0, b, v) / this.gamma(0, b, w);
+    };
+
+     power (c) {
+        return Math.pow(this.uniform(0, 1), 1 / c);
+    };
+
+     rayleigh (a, b) {
+        return a + b * Math.sqrt(-Math.log(this.uniform(0, 1)));
+    };
+
+     studentT (df) {
+        return this.normal(0, 1) / Math.sqrt(this.chiSquare(df) / df);
+    };
+
+     triangular (min, max, c) {
+        var p = this.uniform(0, 1),
+            q = 1 - p;
+        if (p <= (c - min) / (max - min)) {
+            return min + Math.sqrt((max - min) * (c - min) * p);
+        } else {
+            return max - Math.sqrt((max - min) * (max - c) * q);
+        }
+    };
+
+     uniform (min, max) {
+        var init = this.seed !== undefined? this.random() : Math.random();
+        return min + (max - min) * init;
+    };
+
+     userSpecified (usf, xMin, xMax, yMin, yMax) {
+        var x,
+            y,
+            areaMax = (xMax - xMin) * (yMax - yMin);
+
+        do {
+            x = this.uniform(0, areaMax) / (yMax - yMin) + xMin;
+            y = this.uniform(yMin, yMax);
+        } while (y > usf(x, xMin, xMax));
+        return x;
+    };
+
+     weibull (a, b, c) {
+        return a + b * Math.pow(-Math.log(this.uniform(0, 1)), 1 / c);
+    };
+
+     bernoulli (p) {
+        return this.uniform(0, 1) < p ? 0 : 1;
+    };
+
+     binomial (n, p) {
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            sum += this.bernoulli(p);
+        }
+
+        return sum;
+    };
+
+     geometric (p) {
+        return Math.floor(Math.log(this.uniform(0, 1)) / Math.log(1 - p));
+    };
+
+     hypergeometric (n, N, K) {
+        var count = 0;
+        for (var i = 0; i < n; i++, N--) {
+            var p = K / N;
+            if (this.bernoulli(p)) {
+                count++;
+                K--;
+            }
+        }
+
+        return count;
+    };
+
+     negativeBinomial (s, p) {
+        var sum = 0;
+        for (var i = 0; i < s; i++) {
+            sum += this.geometric(p);
+        }
+
+        return sum;
+    };
+
+     pascal (s, p) {
+        return this.negativeBinomial(s, p) + s;
+    };
+
+     poisson (mu) {
+        var b = 1;
+        for (var i = 0; b >= Math.exp(-mu); i++) {
+            b *= this.uniform(0, 1);
+        }
+
+        return i - 1;
+    };
+
+     uniformDiscrete (i, j) {
+        return i + Math.floor((j - i + 1) * this.uniform(0, 1));
+    };
+};
+
+module.exports.Random = Random;
+
+},{}]},{},[10])(10)
 });
