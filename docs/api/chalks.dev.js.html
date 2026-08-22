@@ -1,4 +1,32 @@
-var Chalks = (() => {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: chalks.dev.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: chalks.dev.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var Chalks = (() => {
   var __getOwnPropNames = Object.getOwnPropertyNames;
   var __commonJS = (cb, mod) => function __require() {
     try {
@@ -44,7 +72,7 @@ var Chalks = (() => {
             function padLeft(input2, padding, length) {
               var result3 = input2;
               var padLength = length - input2.length;
-              for (var i = 0; i < padLength; i++) {
+              for (var i = 0; i &lt; padLength; i++) {
                 result3 = padding + result3;
               }
               return result3;
@@ -53,7 +81,7 @@ var Chalks = (() => {
               var charCode = ch.charCodeAt(0);
               var escapeChar;
               var length;
-              if (charCode <= 255) {
+              if (charCode &lt;= 255) {
                 escapeChar = "x";
                 length = 2;
               } else {
@@ -63,7 +91,7 @@ var Chalks = (() => {
               return "\\" + escapeChar + padLeft(charCode.toString(16).toUpperCase(), "0", length);
             }
             function matchFailed(failure) {
-              if (pos < rightmostFailuresPos) {
+              if (pos &lt; rightmostFailuresPos) {
                 return;
               }
               if (pos > rightmostFailuresPos) {
@@ -205,7 +233,7 @@ var Chalks = (() => {
                 if (result0 !== null) {
                   result0 = (function(offset2, splits, pos2) {
                     var elems = [];
-                    for (var i = 0; i < splits; i++)
+                    for (var i = 0; i &lt; splits; i++)
                       elems[i] = 1 / splits;
                     return { splits, pos: pos2 || 0, values: elems };
                   })(pos0, result0[0], result0[2]);
@@ -372,7 +400,7 @@ var Chalks = (() => {
               if (result0 !== null) {
                 result0 = (function(offset2, op, p) {
                   var act = { op, splits: 2, pos: 0, values: [0.5, 0.5] };
-                  if (p != null && p) {
+                  if (p != null &amp;&amp; p) {
                     act.splits = p.splits;
                     act.pos = p.pos;
                     act.values = p.values;
@@ -415,7 +443,7 @@ var Chalks = (() => {
               if (result0 !== null) {
                 result0 = (function(offset2, pos2) {
                   var act = { op: ">", pos: "1" };
-                  if (pos2 != null && pos2)
+                  if (pos2 != null &amp;&amp; pos2)
                     act.pos = pos2;
                   return act;
                 })(pos0, result0[1]);
@@ -429,7 +457,7 @@ var Chalks = (() => {
               expected.sort();
               var lastExpected = null;
               var cleanExpected = [];
-              for (var i = 0; i < expected.length; i++) {
+              for (var i = 0; i &lt; expected.length; i++) {
                 if (expected[i] !== lastExpected) {
                   cleanExpected.push(expected[i]);
                   lastExpected = expected[i];
@@ -441,7 +469,7 @@ var Chalks = (() => {
               var line = 1;
               var column = 1;
               var seenCR = false;
-              for (var i = 0; i < Math.max(pos, rightmostFailuresPos); i++) {
+              for (var i = 0; i &lt; Math.max(pos, rightmostFailuresPos); i++) {
                 var ch = input.charAt(i);
                 if (ch === "\n") {
                   if (!seenCR) {
@@ -463,7 +491,7 @@ var Chalks = (() => {
             var result2 = parseFunctions[startRule]();
             if (result2 === null || pos !== input.length) {
               var offset = Math.max(pos, rightmostFailuresPos);
-              var found = offset < input.length ? input.charAt(offset) : null;
+              var found = offset &lt; input.length ? input.charAt(offset) : null;
               var errorPosition = computeErrorPosition();
               throw new this.SyntaxError(
                 cleanupExpected(rightmostFailuresExpected),
@@ -553,7 +581,7 @@ var Chalks = (() => {
             if (lookahead.op == "|") {
               var widthCount = this.bricks[headPos].x;
               this.bricks.splice(headPos, 1);
-              for (var i = 0; i < lookahead.values.length; i++) {
+              for (var i = 0; i &lt; lookahead.values.length; i++) {
                 this.bricks.splice(
                   headPos + i,
                   0,
@@ -572,7 +600,7 @@ var Chalks = (() => {
             } else if (lookahead.op == "-") {
               var heightCount = this.bricks[headPos].y;
               this.bricks.splice(headPos, 1);
-              for (var i = 0; i < lookahead.values.length; i++) {
+              for (var i = 0; i &lt; lookahead.values.length; i++) {
                 this.bricks.splice(
                   headPos + i,
                   0,
@@ -617,8 +645,8 @@ var Chalks = (() => {
           let points = [];
           let xspan = width / xrows;
           let yspan = height / yrows;
-          for (let ypoints = 1; ypoints < yrows; ypoints++)
-            for (let xpoints = 1; xpoints < xrows; xpoints++)
+          for (let ypoints = 1; ypoints &lt; yrows; ypoints++)
+            for (let xpoints = 1; xpoints &lt; xrows; xpoints++)
               points.push(createVector(xpoints * xspan, ypoints * yspan));
           return points;
         }
@@ -638,7 +666,7 @@ var Chalks = (() => {
           let thetaMax = coils * 2 * Math.PI;
           let awayStep = radius / thetaMax;
           let theta = chord / awayStep;
-          for (let i = 0; i < maxPoints; i++) {
+          for (let i = 0; i &lt; maxPoints; i++) {
             if (theta > thetaMax)
               break;
             let away = awayStep * theta;
@@ -680,7 +708,7 @@ var Chalks = (() => {
          */
         static cols(origin, interColumn, width) {
           let points = [];
-          for (let i = origin.x; i < width; i += interColumn) {
+          for (let i = origin.x; i &lt; width; i += interColumn) {
             points.push(createVector(i, origin.y));
           }
           return points;
@@ -694,7 +722,7 @@ var Chalks = (() => {
          */
         static rows(origin = { x: 0, y: 0 }, interRow = 10, height = 100) {
           let points = [];
-          for (let i = origin.y; i < height; i += interRow) {
+          for (let i = origin.y; i &lt; height; i += interRow) {
             points.push(createVector(origin.x, i));
           }
           return points;
@@ -722,7 +750,7 @@ var Chalks = (() => {
       var Points = class {
         static subd(points, level = 1) {
           let result = [];
-          for (let i = 1; i < points.length; i++) {
+          for (let i = 1; i &lt; points.length; i++) {
             result.push(
               points[i - 1],
               { x: (points[i - 1].x + points[i].x) / 2, y: (points[i - 1].y + points[i].y) / 2 }
@@ -732,7 +760,7 @@ var Chalks = (() => {
           return result;
         }
         static rects(points, height) {
-          for (let i = 0; i < points.length; i++) {
+          for (let i = 0; i &lt; points.length; i++) {
             let length = Math.sqrt(points[i].x * points[i].x + points[i].y * points[i].y);
           }
         }
@@ -752,10 +780,10 @@ var Chalks = (() => {
         static closest(point, listPoints) {
           let closest = void 0;
           let distance = 1e10;
-          let diffPoints = listPoints.filter((p) => p.x !== point.x && p.y !== point.y);
+          let diffPoints = listPoints.filter((p) => p.x !== point.x &amp;&amp; p.y !== point.y);
           diffPoints.forEach((p) => {
             let d = Math.sqrt(Math.pow(point.x - p.x, 2) + Math.pow(point.y - p.y, 2));
-            if (d < distance) {
+            if (d &lt; distance) {
               distance = d;
               closest = p;
             }
@@ -1020,19 +1048,19 @@ var Chalks = (() => {
       Voronoi.prototype.\u03B5 = Voronoi.\u03B5 = 1e-9;
       Voronoi.prototype.inv\u03B5 = Voronoi.inv\u03B5 = 1 / Voronoi.\u03B5;
       Voronoi.prototype.equalWithEpsilon = function(a, b) {
-        return this.abs(a - b) < 1e-9;
+        return this.abs(a - b) &lt; 1e-9;
       };
       Voronoi.prototype.greaterThanWithEpsilon = function(a, b) {
         return a - b > 1e-9;
       };
       Voronoi.prototype.greaterThanOrEqualWithEpsilon = function(a, b) {
-        return b - a < 1e-9;
+        return b - a &lt; 1e-9;
       };
       Voronoi.prototype.lessThanWithEpsilon = function(a, b) {
         return b - a > 1e-9;
       };
       Voronoi.prototype.lessThanOrEqualWithEpsilon = function(a, b) {
-        return a - b < 1e-9;
+        return a - b &lt; 1e-9;
       };
       Voronoi.prototype.RBTree = function() {
         this.root = null;
@@ -1073,11 +1101,11 @@ var Chalks = (() => {
         successor.rbRed = true;
         var grandpa, uncle;
         node = successor;
-        while (parent && parent.rbRed) {
+        while (parent &amp;&amp; parent.rbRed) {
           grandpa = parent.rbParent;
           if (parent === grandpa.rbLeft) {
             uncle = grandpa.rbRight;
-            if (uncle && uncle.rbRed) {
+            if (uncle &amp;&amp; uncle.rbRed) {
               parent.rbRed = uncle.rbRed = false;
               grandpa.rbRed = true;
               node = grandpa;
@@ -1093,7 +1121,7 @@ var Chalks = (() => {
             }
           } else {
             uncle = grandpa.rbLeft;
-            if (uncle && uncle.rbRed) {
+            if (uncle &amp;&amp; uncle.rbRed) {
               parent.rbRed = uncle.rbRed = false;
               grandpa.rbRed = true;
               node = grandpa;
@@ -1138,7 +1166,7 @@ var Chalks = (() => {
           this.root = next;
         }
         var isRed;
-        if (left && right) {
+        if (left &amp;&amp; right) {
           isRed = next.rbRed;
           next.rbRed = node.rbRed;
           next.rbLeft = left;
@@ -1165,7 +1193,7 @@ var Chalks = (() => {
         if (isRed) {
           return;
         }
-        if (node && node.rbRed) {
+        if (node &amp;&amp; node.rbRed) {
           node.rbRed = false;
           return;
         }
@@ -1182,7 +1210,7 @@ var Chalks = (() => {
               this.rbRotateLeft(parent);
               sibling = parent.rbRight;
             }
-            if (sibling.rbLeft && sibling.rbLeft.rbRed || sibling.rbRight && sibling.rbRight.rbRed) {
+            if (sibling.rbLeft &amp;&amp; sibling.rbLeft.rbRed || sibling.rbRight &amp;&amp; sibling.rbRight.rbRed) {
               if (!sibling.rbRight || !sibling.rbRight.rbRed) {
                 sibling.rbLeft.rbRed = false;
                 sibling.rbRed = true;
@@ -1203,7 +1231,7 @@ var Chalks = (() => {
               this.rbRotateRight(parent);
               sibling = parent.rbLeft;
             }
-            if (sibling.rbLeft && sibling.rbLeft.rbRed || sibling.rbRight && sibling.rbRight.rbRed) {
+            if (sibling.rbLeft &amp;&amp; sibling.rbLeft.rbRed || sibling.rbRight &amp;&amp; sibling.rbRight.rbRed) {
               if (!sibling.rbLeft || !sibling.rbLeft.rbRed) {
                 sibling.rbRight.rbRed = false;
                 sibling.rbRed = true;
@@ -1313,9 +1341,9 @@ var Chalks = (() => {
         var neighbors = [], iHalfedge = this.halfedges.length, edge;
         while (iHalfedge--) {
           edge = this.halfedges[iHalfedge].edge;
-          if (edge.lSite !== null && edge.lSite.voronoiId != this.site.voronoiId) {
+          if (edge.lSite !== null &amp;&amp; edge.lSite.voronoiId != this.site.voronoiId) {
             neighbors.push(edge.lSite.voronoiId);
-          } else if (edge.rSite !== null && edge.rSite.voronoiId != this.site.voronoiId) {
+          } else if (edge.rSite !== null &amp;&amp; edge.rSite.voronoiId != this.site.voronoiId) {
             neighbors.push(edge.rSite.voronoiId);
           }
         }
@@ -1327,10 +1355,10 @@ var Chalks = (() => {
           v = halfedges[iHalfedge].getStartpoint();
           vx = v.x;
           vy = v.y;
-          if (vx < xmin) {
+          if (vx &lt; xmin) {
             xmin = vx;
           }
-          if (vy < ymin) {
+          if (vy &lt; ymin) {
             ymin = vy;
           }
           if (vx > xmax) {
@@ -1436,7 +1464,7 @@ var Chalks = (() => {
         return edge;
       };
       Voronoi.prototype.setEdgeStartpoint = function(edge, lSite, rSite, vertex) {
-        if (!edge.va && !edge.vb) {
+        if (!edge.va &amp;&amp; !edge.vb) {
           edge.va = vertex;
           edge.lSite = lSite;
           edge.rSite = rSite;
@@ -1496,7 +1524,7 @@ var Chalks = (() => {
         var circle = beachsection.circleEvent, x = circle.x, y = circle.ycenter, vertex = this.createVertex(x, y), previous = beachsection.rbPrevious, next = beachsection.rbNext, disappearingTransitions = [beachsection], abs_fn = Math.abs;
         this.detachBeachsection(beachsection);
         var lArc = previous;
-        while (lArc.circleEvent && abs_fn(x - lArc.circleEvent.x) < 1e-9 && abs_fn(y - lArc.circleEvent.ycenter) < 1e-9) {
+        while (lArc.circleEvent &amp;&amp; abs_fn(x - lArc.circleEvent.x) &lt; 1e-9 &amp;&amp; abs_fn(y - lArc.circleEvent.ycenter) &lt; 1e-9) {
           previous = lArc.rbPrevious;
           disappearingTransitions.unshift(lArc);
           this.detachBeachsection(lArc);
@@ -1505,7 +1533,7 @@ var Chalks = (() => {
         disappearingTransitions.unshift(lArc);
         this.detachCircleEvent(lArc);
         var rArc = next;
-        while (rArc.circleEvent && abs_fn(x - rArc.circleEvent.x) < 1e-9 && abs_fn(y - rArc.circleEvent.ycenter) < 1e-9) {
+        while (rArc.circleEvent &amp;&amp; abs_fn(x - rArc.circleEvent.x) &lt; 1e-9 &amp;&amp; abs_fn(y - rArc.circleEvent.ycenter) &lt; 1e-9) {
           next = rArc.rbNext;
           disappearingTransitions.push(rArc);
           this.detachBeachsection(rArc);
@@ -1514,7 +1542,7 @@ var Chalks = (() => {
         disappearingTransitions.push(rArc);
         this.detachCircleEvent(rArc);
         var nArcs = disappearingTransitions.length, iArc;
-        for (iArc = 1; iArc < nArcs; iArc++) {
+        for (iArc = 1; iArc &lt; nArcs; iArc++) {
           rArc = disappearingTransitions[iArc];
           lArc = disappearingTransitions[iArc - 1];
           this.setEdgeStartpoint(rArc.edge, lArc.site, rArc.site, vertex);
@@ -1556,7 +1584,7 @@ var Chalks = (() => {
         }
         var newArc = this.createBeachsection(site);
         this.beachline.rbInsertSuccessor(lArc, newArc);
-        if (!lArc && !rArc) {
+        if (!lArc &amp;&amp; !rArc) {
           return;
         }
         if (lArc === rArc) {
@@ -1568,7 +1596,7 @@ var Chalks = (() => {
           this.attachCircleEvent(rArc);
           return;
         }
-        if (lArc && !rArc) {
+        if (lArc &amp;&amp; !rArc) {
           newArc.edge = this.createEdge(lArc.site, newArc.site);
           return;
         }
@@ -1622,7 +1650,7 @@ var Chalks = (() => {
         arc.circleEvent = circleEvent;
         var predecessor = null, node = this.circleEvents.root;
         while (node) {
-          if (circleEvent.y < node.y || circleEvent.y === node.y && circleEvent.x <= node.x) {
+          if (circleEvent.y &lt; node.y || circleEvent.y === node.y &amp;&amp; circleEvent.x &lt;= node.x) {
             if (node.rbLeft) {
               node = node.rbLeft;
             } else {
@@ -1667,11 +1695,11 @@ var Chalks = (() => {
           fb = fy - fm * fx;
         }
         if (fm === void 0) {
-          if (fx < xl || fx >= xr) {
+          if (fx &lt; xl || fx >= xr) {
             return false;
           }
           if (lx > rx) {
-            if (!va || va.y < yt) {
+            if (!va || va.y &lt; yt) {
               va = this.createVertex(fx, yt);
             } else if (va.y >= yb) {
               return false;
@@ -1680,14 +1708,14 @@ var Chalks = (() => {
           } else {
             if (!va || va.y > yb) {
               va = this.createVertex(fx, yb);
-            } else if (va.y < yt) {
+            } else if (va.y &lt; yt) {
               return false;
             }
             vb = this.createVertex(fx, yt);
           }
-        } else if (fm < -1 || fm > 1) {
+        } else if (fm &lt; -1 || fm > 1) {
           if (lx > rx) {
-            if (!va || va.y < yt) {
+            if (!va || va.y &lt; yt) {
               va = this.createVertex((yt - fb) / fm, yt);
             } else if (va.y >= yb) {
               return false;
@@ -1696,14 +1724,14 @@ var Chalks = (() => {
           } else {
             if (!va || va.y > yb) {
               va = this.createVertex((yb - fb) / fm, yb);
-            } else if (va.y < yt) {
+            } else if (va.y &lt; yt) {
               return false;
             }
             vb = this.createVertex((yt - fb) / fm, yt);
           }
         } else {
-          if (ly < ry) {
-            if (!va || va.x < xl) {
+          if (ly &lt; ry) {
+            if (!va || va.x &lt; xl) {
               va = this.createVertex(xl, fm * xl + fb);
             } else if (va.x >= xr) {
               return false;
@@ -1712,7 +1740,7 @@ var Chalks = (() => {
           } else {
             if (!va || va.x > xr) {
               va = this.createVertex(xr, fm * xr + fb);
-            } else if (va.x < xl) {
+            } else if (va.x &lt; xl) {
               return false;
             }
             vb = this.createVertex(xl, fm * xl + fb);
@@ -1725,15 +1753,15 @@ var Chalks = (() => {
       Voronoi.prototype.clipEdge = function(edge, bbox) {
         var ax = edge.va.x, ay = edge.va.y, bx = edge.vb.x, by = edge.vb.y, t0 = 0, t1 = 1, dx = bx - ax, dy = by - ay;
         var q = ax - bbox.xl;
-        if (dx === 0 && q < 0) {
+        if (dx === 0 &amp;&amp; q &lt; 0) {
           return false;
         }
         var r = -q / dx;
-        if (dx < 0) {
-          if (r < t0) {
+        if (dx &lt; 0) {
+          if (r &lt; t0) {
             return false;
           }
-          if (r < t1) {
+          if (r &lt; t1) {
             t1 = r;
           }
         } else if (dx > 0) {
@@ -1745,11 +1773,11 @@ var Chalks = (() => {
           }
         }
         q = bbox.xr - ax;
-        if (dx === 0 && q < 0) {
+        if (dx === 0 &amp;&amp; q &lt; 0) {
           return false;
         }
         r = q / dx;
-        if (dx < 0) {
+        if (dx &lt; 0) {
           if (r > t1) {
             return false;
           }
@@ -1757,23 +1785,23 @@ var Chalks = (() => {
             t0 = r;
           }
         } else if (dx > 0) {
-          if (r < t0) {
+          if (r &lt; t0) {
             return false;
           }
-          if (r < t1) {
+          if (r &lt; t1) {
             t1 = r;
           }
         }
         q = ay - bbox.yt;
-        if (dy === 0 && q < 0) {
+        if (dy === 0 &amp;&amp; q &lt; 0) {
           return false;
         }
         r = -q / dy;
-        if (dy < 0) {
-          if (r < t0) {
+        if (dy &lt; 0) {
+          if (r &lt; t0) {
             return false;
           }
-          if (r < t1) {
+          if (r &lt; t1) {
             t1 = r;
           }
         } else if (dy > 0) {
@@ -1785,11 +1813,11 @@ var Chalks = (() => {
           }
         }
         q = bbox.yb - ay;
-        if (dy === 0 && q < 0) {
+        if (dy === 0 &amp;&amp; q &lt; 0) {
           return false;
         }
         r = q / dy;
-        if (dy < 0) {
+        if (dy &lt; 0) {
           if (r > t1) {
             return false;
           }
@@ -1797,20 +1825,20 @@ var Chalks = (() => {
             t0 = r;
           }
         } else if (dy > 0) {
-          if (r < t0) {
+          if (r &lt; t0) {
             return false;
           }
-          if (r < t1) {
+          if (r &lt; t1) {
             t1 = r;
           }
         }
         if (t0 > 0) {
           edge.va = this.createVertex(ax + t0 * dx, ay + t0 * dy);
         }
-        if (t1 < 1) {
+        if (t1 &lt; 1) {
           edge.vb = this.createVertex(ax + t1 * dx, ay + t1 * dy);
         }
-        if (t0 > 0 || t1 < 1) {
+        if (t0 > 0 || t1 &lt; 1) {
           this.cells[edge.lSite.voronoiId].closeMe = true;
           this.cells[edge.rSite.voronoiId].closeMe = true;
         }
@@ -1820,7 +1848,7 @@ var Chalks = (() => {
         var edges = this.edges, iEdge = edges.length, edge, abs_fn = Math.abs;
         while (iEdge--) {
           edge = edges[iEdge];
-          if (!this.connectEdge(edge, bbox) || !this.clipEdge(edge, bbox) || abs_fn(edge.va.x - edge.vb.x) < 1e-9 && abs_fn(edge.va.y - edge.vb.y) < 1e-9) {
+          if (!this.connectEdge(edge, bbox) || !this.clipEdge(edge, bbox) || abs_fn(edge.va.x - edge.vb.x) &lt; 1e-9 &amp;&amp; abs_fn(edge.va.y - edge.vb.y) &lt; 1e-9) {
             edge.va = edge.vb = null;
             edges.splice(iEdge, 1);
           }
@@ -1839,13 +1867,13 @@ var Chalks = (() => {
           halfedges = cell.halfedges;
           nHalfedges = halfedges.length;
           iLeft = 0;
-          while (iLeft < nHalfedges) {
+          while (iLeft &lt; nHalfedges) {
             va = halfedges[iLeft].getEndpoint();
             vz = halfedges[(iLeft + 1) % nHalfedges].getStartpoint();
             if (abs_fn(va.x - vz.x) >= 1e-9 || abs_fn(va.y - vz.y) >= 1e-9) {
               switch (true) {
                 // walk downward along left side
-                case (this.equalWithEpsilon(va.x, xl) && this.lessThanWithEpsilon(va.y, yb)):
+                case (this.equalWithEpsilon(va.x, xl) &amp;&amp; this.lessThanWithEpsilon(va.y, yb)):
                   lastBorderSegment = this.equalWithEpsilon(vz.x, xl);
                   vb = this.createVertex(xl, lastBorderSegment ? vz.y : yb);
                   edge = this.createBorderEdge(cell.site, va, vb);
@@ -1858,7 +1886,7 @@ var Chalks = (() => {
                   va = vb;
                 // fall through
                 // walk rightward along bottom side
-                case (this.equalWithEpsilon(va.y, yb) && this.lessThanWithEpsilon(va.x, xr)):
+                case (this.equalWithEpsilon(va.y, yb) &amp;&amp; this.lessThanWithEpsilon(va.x, xr)):
                   lastBorderSegment = this.equalWithEpsilon(vz.y, yb);
                   vb = this.createVertex(lastBorderSegment ? vz.x : xr, yb);
                   edge = this.createBorderEdge(cell.site, va, vb);
@@ -1871,7 +1899,7 @@ var Chalks = (() => {
                   va = vb;
                 // fall through
                 // walk upward along right side
-                case (this.equalWithEpsilon(va.x, xr) && this.greaterThanWithEpsilon(va.y, yt)):
+                case (this.equalWithEpsilon(va.x, xr) &amp;&amp; this.greaterThanWithEpsilon(va.y, yt)):
                   lastBorderSegment = this.equalWithEpsilon(vz.x, xr);
                   vb = this.createVertex(xr, lastBorderSegment ? vz.y : yt);
                   edge = this.createBorderEdge(cell.site, va, vb);
@@ -1884,7 +1912,7 @@ var Chalks = (() => {
                   va = vb;
                 // fall through
                 // walk leftward along top side
-                case (this.equalWithEpsilon(va.y, yt) && this.greaterThanWithEpsilon(va.x, xl)):
+                case (this.equalWithEpsilon(va.y, yt) &amp;&amp; this.greaterThanWithEpsilon(va.x, xl)):
                   lastBorderSegment = this.equalWithEpsilon(vz.y, yt);
                   vb = this.createVertex(lastBorderSegment ? vz.x : xl, yt);
                   edge = this.createBorderEdge(cell.site, va, vb);
@@ -1971,7 +1999,7 @@ var Chalks = (() => {
         var site = siteEvents.pop(), siteid = 0, xsitex, xsitey, cells = this.cells, circle;
         for (; ; ) {
           circle = this.firstCircleEvent;
-          if (site && (!circle || site.y < circle.y || site.y === circle.y && site.x < circle.x)) {
+          if (site &amp;&amp; (!circle || site.y &lt; circle.y || site.y === circle.y &amp;&amp; site.x &lt; circle.x)) {
             if (site.x !== xsitex || site.y !== xsitey) {
               cells[siteid] = this.createCell(site);
               site.voronoiId = siteid++;
@@ -2029,7 +2057,7 @@ var Chalks = (() => {
           let points = [];
           let stepSize = 0.025;
           let upperLimit = loops * Math.PI;
-          for (let t = 0; t < upperLimit; t += stepSize) {
+          for (let t = 0; t &lt; upperLimit; t += stepSize) {
             let e = Math.exp(Math.cos(t)) - 2 * Math.cos(lambda * t) - Math.pow(Math.sin(t / 12), 5);
             let x = Math.sin(t) * e;
             let y = Math.cos(t) * e;
@@ -2048,7 +2076,7 @@ var Chalks = (() => {
           let points = [];
           let stepSize = 0.025;
           let upperLimit = loops * Math.PI;
-          for (let th = 0; th < upperLimit; th += stepSize) {
+          for (let th = 0; th &lt; upperLimit; th += stepSize) {
             let x = (R - r) * Math.cos(th) + r * Math.cos((R - r) / r * th);
             let y = (R - r) * Math.sin(th) - r * Math.sin((R - r) / r * th);
             points.push(createVector(x * scale + origin.x, y * scale + origin.y));
@@ -2066,7 +2094,7 @@ var Chalks = (() => {
           let points = [];
           let stepSize = 0.025;
           let upperLimit = loops * Math.PI;
-          for (let th = 0; th < upperLimit; th += stepSize) {
+          for (let th = 0; th &lt; upperLimit; th += stepSize) {
             let x = Math.cos(k * th) * Math.cos(th);
             let y = Math.cos(k * th) * Math.sin(th);
             points.push(createVector(x, y));
@@ -2106,7 +2134,7 @@ var Chalks = (() => {
           let x = 0.1, y = 0.1, z = 0.1;
           let tmpx = 0, tmpy = 0, tmpz = 0;
           let points = [];
-          for (let i = 0; i < loops; i++) {
+          for (let i = 0; i &lt; loops; i++) {
             let dt = rosslerPoint(x, y, z, a, b, c);
             tmpx = x + h * dt.x;
             tmpy = y + h * dt.y;
@@ -2147,7 +2175,7 @@ var Chalks = (() => {
           ;
           let tmpx = 0, tmpy = 0, tmpz = 0;
           let points = [];
-          for (let i = 0; i < loops; i++) {
+          for (let i = 0; i &lt; loops; i++) {
             let dt = lorentzPoint(x, y, z, a, b, c);
             tmpx = x + h * dt.x;
             tmpy = y + h * dt.y;
@@ -2171,7 +2199,7 @@ var Chalks = (() => {
           let points = [];
           let x = 0.1, y = 0.1;
           let r = 360 % entryString.length;
-          for (let i = 0; i < entryString.length; i++) {
+          for (let i = 0; i &lt; entryString.length; i++) {
             a[i] = (entryString.charCodeAt(i) - 65 - 12) / 10;
           }
           points.push({
@@ -2179,7 +2207,7 @@ var Chalks = (() => {
             y: origin.y + 58 * Math.sin(r),
             r: 0
           });
-          for (let i = 0; i < loops; i++) {
+          for (let i = 0; i &lt; loops; i++) {
             let nx = a[0] + a[1] * x + a[2] * x * x + a[3] * x * y + a[4] * y + a[5] * y * y;
             let ny = a[6] + a[7] * x + a[8] * x * x + a[9] * x * y + a[10] * y + a[11] * y * y;
             let xvalue = origin.x * nx + origin.x;
@@ -2199,7 +2227,7 @@ var Chalks = (() => {
         static dejon(origin, a, b, c, d, scale = 100, loops = 10) {
           let points = [];
           let xt = 1, yt = 1;
-          for (let i = 0; i < loops; i++) {
+          for (let i = 0; i &lt; loops; i++) {
             let nextx = Math.sin(a * yt) - Math.cos(b * xt);
             let nexty = Math.sin(c * xt) - Math.cos(d * yt);
             points.push(createVector(scale * xt + origin.x + scale, scale * yt + origin.y - scale));
@@ -2250,7 +2278,7 @@ var Chalks = (() => {
           }
         }
         take(...functionNames) {
-          if (this.it < this.stop) {
+          if (this.it &lt; this.stop) {
             let funName = random(functionNames);
             if (typeof funName === "function") {
               this.it++;
@@ -2342,7 +2370,7 @@ var Chalks = (() => {
         // Given a point, checks if it's within the bounds of this vector
         withinBounds(point, size) {
           var radius = ~~(size / 2) + 1;
-          return this.x >= point.x - radius && this.x <= point.x + radius && this.y >= point.y - radius && this.y <= point.y + radius;
+          return this.x >= point.x - radius &amp;&amp; this.x &lt;= point.x + radius &amp;&amp; this.y >= point.y - radius &amp;&amp; this.y &lt;= point.y + radius;
         }
         // Calculates the angle of this point relative to (0,0)
         getAngle() {
@@ -2514,7 +2542,7 @@ var Chalks = (() => {
           return min + (max - min) * q * q;
         }
         beta(v, w, min, max) {
-          if (v < w) {
+          if (v &lt; w) {
             return max - (max - min) * this.beta(w, v, 0, 1);
           }
           var y1 = this.gamma(0, 1, v), y2 = this.gamma(0, 1, w);
@@ -2540,7 +2568,7 @@ var Chalks = (() => {
         erlang(b, c) {
           var prod = 1;
           var i = 1;
-          for (i = 1; i < c; i++) {
+          for (i = 1; i &lt; c; i++) {
             prod *= this.uniform(0, 1);
           }
           return -b * Math.log(prod);
@@ -2556,17 +2584,17 @@ var Chalks = (() => {
         }
         gamma(a, b, c) {
           var A = 1 / Math.sqrt(2 * c - 1), B = c - Math.log(4), Q = c + 1 / A, T = 4.5, D = 1 + Math.log(T), C = 1 + c / E;
-          if (c < 1) {
+          if (c &lt; 1) {
             while (true) {
               var p = C * this.uniform(0, 1);
               if (p > 1) {
                 var y = -Math.log((C - p) / c);
-                if (this.uniform(0, 1) <= Math.pow(y, c - 1)) {
+                if (this.uniform(0, 1) &lt;= Math.pow(y, c - 1)) {
                   return a + b * y;
                 }
               } else {
                 var y = Math.pow(p, 1 / c);
-                if (this.uniform(0, 1) <= Math.exp(-y)) {
+                if (this.uniform(0, 1) &lt;= Math.exp(-y)) {
                   return a + b * y;
                 }
               }
@@ -2610,7 +2638,7 @@ var Chalks = (() => {
         }
         parabolic(min, max) {
           var parabola = function(x, min2, max2) {
-            if (x < min2 || x > max2) {
+            if (x &lt; min2 || x > max2) {
               return 0;
             }
             var a2 = 0.5 * (min2 + max2), b = 0.5 * (max2 - min2), yMax2 = 3 / (4 * b);
@@ -2639,7 +2667,7 @@ var Chalks = (() => {
         }
         triangular(min, max, c) {
           var p = this.uniform(0, 1), q = 1 - p;
-          if (p <= (c - min) / (max - min)) {
+          if (p &lt;= (c - min) / (max - min)) {
             return min + Math.sqrt((max - min) * (c - min) * p);
           } else {
             return max - Math.sqrt((max - min) * (max - c) * q);
@@ -2661,11 +2689,11 @@ var Chalks = (() => {
           return a + b * Math.pow(-Math.log(this.uniform(0, 1)), 1 / c);
         }
         bernoulli(p) {
-          return this.uniform(0, 1) < p ? 0 : 1;
+          return this.uniform(0, 1) &lt; p ? 0 : 1;
         }
         binomial(n, p) {
           var sum = 0;
-          for (var i = 0; i < n; i++) {
+          for (var i = 0; i &lt; n; i++) {
             sum += this.bernoulli(p);
           }
           return sum;
@@ -2675,7 +2703,7 @@ var Chalks = (() => {
         }
         hypergeometric(n, N, K) {
           var count = 0;
-          for (var i = 0; i < n; i++, N--) {
+          for (var i = 0; i &lt; n; i++, N--) {
             var p = K / N;
             if (this.bernoulli(p)) {
               count++;
@@ -2686,7 +2714,7 @@ var Chalks = (() => {
         }
         negativeBinomial(s, p) {
           var sum = 0;
-          for (var i = 0; i < s; i++) {
+          for (var i = 0; i &lt; s; i++) {
             sum += this.geometric(p);
           }
           return sum;
@@ -2849,7 +2877,7 @@ var Chalks = (() => {
           this.particles.forEach(function(part, i2) {
             var newTraces = [];
             part.getTrace().forEach(function(pos, i3) {
-              if (pos.x <= that.baseOrigin.x + that.maxWidth && pos.y <= that.maxHeight + that.baseOrigin.y) {
+              if (pos.x &lt;= that.baseOrigin.x + that.maxWidth &amp;&amp; pos.y &lt;= that.maxHeight + that.baseOrigin.y) {
                 newTraces.push(pos);
               }
             });
@@ -2867,7 +2895,7 @@ var Chalks = (() => {
         addNewParticles() {
           var that = this;
           var emitParticles = function(emitter) {
-            for (var i = 0; i < emitter.emissionRate; i++)
+            for (var i = 0; i &lt; emitter.emissionRate; i++)
               that.particles.push(emitter.addParticle());
           };
           this.emitters.forEach(emitParticles);
@@ -2893,8 +2921,8 @@ var Chalks = (() => {
         // the particles position according to the registered Fields.
         evolve(steps) {
           var fields = this.fields;
-          for (var step = 0; step < steps; step++) {
-            if (this.particles.length < this.maxParticles)
+          for (var step = 0; step &lt; steps; step++) {
+            if (this.particles.length &lt; this.maxParticles)
               this.addNewParticles();
             this.particles.forEach(function(part) {
               part.submitToFields(fields);
@@ -2923,7 +2951,7 @@ var Chalks = (() => {
           var classToType, len, name, o, ref;
           classToType = {};
           ref = "Boolean Number String Function Array Date RegExp Undefined Null".split(" ");
-          for (o = 0, len = ref.length; o < len; o++) {
+          for (o = 0, len = ref.length; o &lt; len; o++) {
             name = ref[o];
             classToType["[object " + name + "]"] = name.toLowerCase();
           }
@@ -2940,7 +2968,7 @@ var Chalks = (() => {
           if (max2 == null) {
             max2 = 1;
           }
-          if (x < min) {
+          if (x &lt; min) {
             x = min;
           }
           if (x > max2) {
@@ -2959,19 +2987,19 @@ var Chalks = (() => {
           var i, o;
           rgb._clipped = false;
           rgb._unclipped = rgb.slice(0);
-          for (i = o = 0; o < 3; i = ++o) {
-            if (i < 3) {
-              if (rgb[i] < 0 || rgb[i] > 255) {
+          for (i = o = 0; o &lt; 3; i = ++o) {
+            if (i &lt; 3) {
+              if (rgb[i] &lt; 0 || rgb[i] > 255) {
                 rgb._clipped = true;
               }
-              if (rgb[i] < 0) {
+              if (rgb[i] &lt; 0) {
                 rgb[i] = 0;
               }
               if (rgb[i] > 255) {
                 rgb[i] = 255;
               }
             } else if (i === 3) {
-              if (rgb[i] < 0) {
+              if (rgb[i] &lt; 0) {
                 rgb[i] = 0;
               }
               if (rgb[i] > 1) {
@@ -3002,15 +3030,15 @@ var Chalks = (() => {
         };
         chroma["default"] = chroma;
         _interpolators = [];
-        if (typeof module !== "undefined" && module !== null && module.exports != null) {
+        if (typeof module !== "undefined" &amp;&amp; module !== null &amp;&amp; module.exports != null) {
           module.exports = chroma;
         }
-        if (typeof define === "function" && define.amd) {
+        if (typeof define === "function" &amp;&amp; define.amd) {
           define([], function() {
             return chroma;
           });
         } else {
-          root = typeof exports !== "undefined" && exports !== null ? exports : this;
+          root = typeof exports !== "undefined" &amp;&amp; exports !== null ? exports : this;
           root.chroma = chroma;
         }
         chroma.version = "1.4.1";
@@ -3022,7 +3050,7 @@ var Chalks = (() => {
             var arg, args, chk, len, len1, me, mode, o, w;
             me = this;
             args = [];
-            for (o = 0, len = arguments.length; o < len; o++) {
+            for (o = 0, len = arguments.length; o &lt; len; o++) {
               arg = arguments[o];
               if (arg != null) {
                 args.push(arg);
@@ -3040,7 +3068,7 @@ var Chalks = (() => {
                 });
                 _guess_formats_sorted = true;
               }
-              for (w = 0, len1 = _guess_formats.length; w < len1; w++) {
+              for (w = 0, len1 = _guess_formats.length; w &lt; len1; w++) {
                 chk = _guess_formats[w];
                 mode = chk.test.apply(chk, args);
                 if (mode) {
@@ -3287,7 +3315,7 @@ var Chalks = (() => {
           return [r, g, b, args.length > 3 ? args[3] : 1];
         };
         xyz_rgb = function(r) {
-          return 255 * (r <= 304e-5 ? 12.92 * r : 1.055 * pow(r, 1 / 2.4) - 0.055);
+          return 255 * (r &lt;= 304e-5 ? 12.92 * r : 1.055 * pow(r, 1 / 2.4) - 0.055);
         };
         lab_xyz = function(t) {
           if (t > LAB_CONSTANTS.t1) {
@@ -3313,7 +3341,7 @@ var Chalks = (() => {
           return [116 * y - 16, 500 * (x - y), 200 * (y - z)];
         };
         rgb_xyz = function(r) {
-          if ((r /= 255) <= 0.04045) {
+          if ((r /= 255) &lt;= 0.04045) {
             return r / 12.92;
           } else {
             return pow((r + 0.055) / 1.055, 2.4);
@@ -3354,7 +3382,7 @@ var Chalks = (() => {
           colors2 = (function() {
             var len, o, results;
             results = [];
-            for (o = 0, len = colors2.length; o < len; o++) {
+            for (o = 0, len = colors2.length; o &lt; len; o++) {
               c = colors2[o];
               results.push(chroma(c));
             }
@@ -3364,7 +3392,7 @@ var Chalks = (() => {
             ref = (function() {
               var len, o, results;
               results = [];
-              for (o = 0, len = colors2.length; o < len; o++) {
+              for (o = 0, len = colors2.length; o &lt; len; o++) {
                 c = colors2[o];
                 results.push(c.lab());
               }
@@ -3375,7 +3403,7 @@ var Chalks = (() => {
               lab = (function() {
                 var o, results;
                 results = [];
-                for (i = o = 0; o <= 2; i = ++o) {
+                for (i = o = 0; o &lt;= 2; i = ++o) {
                   results.push(lab0[i] + t * (lab1[i] - lab0[i]));
                 }
                 return results;
@@ -3386,7 +3414,7 @@ var Chalks = (() => {
             ref1 = (function() {
               var len, o, results;
               results = [];
-              for (o = 0, len = colors2.length; o < len; o++) {
+              for (o = 0, len = colors2.length; o &lt; len; o++) {
                 c = colors2[o];
                 results.push(c.lab());
               }
@@ -3397,7 +3425,7 @@ var Chalks = (() => {
               lab = (function() {
                 var o, results;
                 results = [];
-                for (i = o = 0; o <= 2; i = ++o) {
+                for (i = o = 0; o &lt;= 2; i = ++o) {
                   results.push((1 - t) * (1 - t) * lab0[i] + 2 * (1 - t) * t * lab1[i] + t * t * lab2[i]);
                 }
                 return results;
@@ -3408,7 +3436,7 @@ var Chalks = (() => {
             ref2 = (function() {
               var len, o, results;
               results = [];
-              for (o = 0, len = colors2.length; o < len; o++) {
+              for (o = 0, len = colors2.length; o &lt; len; o++) {
                 c = colors2[o];
                 results.push(c.lab());
               }
@@ -3419,7 +3447,7 @@ var Chalks = (() => {
               lab = (function() {
                 var o, results;
                 results = [];
-                for (i = o = 0; o <= 2; i = ++o) {
+                for (i = o = 0; o &lt;= 2; i = ++o) {
                   results.push((1 - t) * (1 - t) * (1 - t) * lab0[i] + 3 * (1 - t) * (1 - t) * t * lab1[i] + 3 * (1 - t) * t * t * lab2[i] + t * t * t * lab3[i]);
                 }
                 return results;
@@ -3430,7 +3458,7 @@ var Chalks = (() => {
             I0 = bezier(colors2.slice(0, 3));
             I1 = bezier(colors2.slice(2, 5));
             I = function(t) {
-              if (t < 0.5) {
+              if (t &lt; 0.5) {
                 return I0(t * 2);
               } else {
                 return I1((t - 0.5) * 2);
@@ -3543,7 +3571,7 @@ var Chalks = (() => {
           var code, digits, i, o;
           digits = "0123456789abcdef";
           code = "#";
-          for (i = o = 0; o < 6; i = ++o) {
+          for (i = o = 0; o &lt; 6; i = ++o) {
             code += digits.charAt(floor(Math.random() * 16));
           }
           return new Color(code);
@@ -3563,7 +3591,7 @@ var Chalks = (() => {
           if (type(col2) !== "object") {
             col2 = chroma(col2);
           }
-          for (o = 0, len = _interpolators.length; o < len; o++) {
+          for (o = 0, len = _interpolators.length; o &lt; len; o++) {
             interpol = _interpolators[o];
             if (m2 === interpol[0]) {
               res = interpol[1](col1, col2, f, m2);
@@ -3623,10 +3651,10 @@ var Chalks = (() => {
           test: function(n) {
             var a;
             a = unpack(arguments);
-            if (type(a) === "array" && a.length === 3) {
+            if (type(a) === "array" &amp;&amp; a.length === 3) {
               return "rgb";
             }
-            if (a.length === 4 && type(a[3]) === "number" && a[3] >= 0 && a[3] <= 1) {
+            if (a.length === 4 &amp;&amp; type(a[3]) === "number" &amp;&amp; a[3] >= 0 &amp;&amp; a[3] &lt;= 1) {
               return "rgb";
             }
           }
@@ -3642,7 +3670,7 @@ var Chalks = (() => {
           var col, f, len, o, rgb, xyz;
           f = 1 / colors2.length;
           xyz = [0, 0, 0, 0];
-          for (o = 0, len = colors2.length; o < len; o++) {
+          for (o = 0, len = colors2.length; o &lt; len; o++) {
             col = colors2[o];
             rgb = col._rgb;
             xyz[0] += pow(rgb[0], 2) * f;
@@ -3679,14 +3707,14 @@ var Chalks = (() => {
           for (i in xyz) {
             xyz[i] = xyz[i] || 0;
             cnt.push(isNaN(xyz[i]) ? 0 : 1);
-            if (mode.charAt(i) === "h" && !isNaN(xyz[i])) {
+            if (mode.charAt(i) === "h" &amp;&amp; !isNaN(xyz[i])) {
               A = xyz[i] / 180 * PI;
               dx += cos(A);
               dy += sin(A);
             }
           }
           alpha = first.alpha();
-          for (o = 0, len = colors2.length; o < len; o++) {
+          for (o = 0, len = colors2.length; o &lt; len; o++) {
             c = colors2[o];
             xyz2 = c.get(mode);
             alpha += c.alpha();
@@ -3706,7 +3734,7 @@ var Chalks = (() => {
           for (i in xyz) {
             if (mode.charAt(i) === "h") {
               A = atan2(dy / cnt[i], dx / cnt[i]) / PI * 180;
-              while (A < 0) {
+              while (A &lt; 0) {
                 A += 360;
               }
               while (A >= 360) {
@@ -3731,8 +3759,8 @@ var Chalks = (() => {
             }
             u = parseInt(hex, 16);
             r = u >> 16;
-            g = u >> 8 & 255;
-            b = u & 255;
+            g = u >> 8 &amp; 255;
+            b = u &amp; 255;
             return [r, g, b, 1];
           }
           if (hex.match(/^#?([A-Fa-f0-9]{8})$/)) {
@@ -3740,13 +3768,13 @@ var Chalks = (() => {
               hex = hex.substr(1);
             }
             u = parseInt(hex, 16);
-            r = u >> 24 & 255;
-            g = u >> 16 & 255;
-            b = u >> 8 & 255;
-            a = round((u & 255) / 255 * 100) / 100;
+            r = u >> 24 &amp; 255;
+            g = u >> 16 &amp; 255;
+            b = u >> 8 &amp; 255;
+            a = round((u &amp; 255) / 255 * 100) / 100;
             return [r, g, b, a];
           }
-          if (_input.css != null && (rgb = _input.css(hex))) {
+          if (_input.css != null &amp;&amp; (rgb = _input.css(hex))) {
             return rgb;
           }
           throw "unknown color: " + hex;
@@ -3758,12 +3786,12 @@ var Chalks = (() => {
           }
           r = channels[0], g = channels[1], b = channels[2], a = channels[3];
           if (mode === "auto") {
-            mode = a < 1 ? "rgba" : "rgb";
+            mode = a &lt; 1 ? "rgba" : "rgb";
           }
           r = Math.round(r);
           g = Math.round(g);
           b = Math.round(b);
-          u = r << 16 | g << 8 | b;
+          u = r &lt;&lt; 16 | g &lt;&lt; 8 | b;
           str = "000000" + u.toString(16);
           str = str.substr(str.length - 6);
           hxa = "0" + round(a * 255).toString(16);
@@ -3799,7 +3827,7 @@ var Chalks = (() => {
         _guess_formats.push({
           p: 4,
           test: function(n) {
-            if (arguments.length === 1 && type(n) === "string") {
+            if (arguments.length === 1 &amp;&amp; type(n) === "string") {
               return "hex";
             }
           }
@@ -3813,24 +3841,24 @@ var Chalks = (() => {
           } else {
             t3 = [0, 0, 0];
             c = [0, 0, 0];
-            t2 = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            t2 = l &lt; 0.5 ? l * (1 + s) : l + s - l * s;
             t1 = 2 * l - t2;
             h /= 360;
             t3[0] = h + 1 / 3;
             t3[1] = h;
             t3[2] = h - 1 / 3;
-            for (i = o = 0; o <= 2; i = ++o) {
-              if (t3[i] < 0) {
+            for (i = o = 0; o &lt;= 2; i = ++o) {
+              if (t3[i] &lt; 0) {
                 t3[i] += 1;
               }
               if (t3[i] > 1) {
                 t3[i] -= 1;
               }
-              if (6 * t3[i] < 1) {
+              if (6 * t3[i] &lt; 1) {
                 c[i] = t1 + (t2 - t1) * 6 * t3[i];
-              } else if (2 * t3[i] < 1) {
+              } else if (2 * t3[i] &lt; 1) {
                 c[i] = t2;
-              } else if (3 * t3[i] < 2) {
+              } else if (3 * t3[i] &lt; 2) {
                 c[i] = t1 + (t2 - t1) * (2 / 3 - t3[i]) * 6;
               } else {
                 c[i] = t1;
@@ -3846,7 +3874,7 @@ var Chalks = (() => {
         };
         rgb2hsl = function(r, g, b) {
           var h, l, min, ref, s;
-          if (r !== void 0 && r.length >= 3) {
+          if (r !== void 0 &amp;&amp; r.length >= 3) {
             ref = r, r = ref[0], g = ref[1], b = ref[2];
           }
           r /= 255;
@@ -3859,7 +3887,7 @@ var Chalks = (() => {
             s = 0;
             h = Number.NaN;
           } else {
-            s = l < 0.5 ? (max - min) / (max + min) : (max - min) / (2 - max - min);
+            s = l &lt; 0.5 ? (max - min) / (max + min) : (max - min) / (2 - max - min);
           }
           if (r === max) {
             h = (g - b) / (max - min);
@@ -3869,7 +3897,7 @@ var Chalks = (() => {
             h = 4 + (r - g) / (max - min);
           }
           h *= 60;
-          if (h < 0) {
+          if (h &lt; 0) {
             h += 360;
           }
           return [h, s, l];
@@ -3900,7 +3928,7 @@ var Chalks = (() => {
             if (h > 360) {
               h -= 360;
             }
-            if (h < 0) {
+            if (h &lt; 0) {
               h += 360;
             }
             h /= 60;
@@ -3953,7 +3981,7 @@ var Chalks = (() => {
               h = 4 + (r - g) / delta;
             }
             h *= 60;
-            if (h < 0) {
+            if (h &lt; 0) {
               h += 360;
             }
           }
@@ -3973,10 +4001,10 @@ var Chalks = (() => {
         };
         num2rgb = function(num) {
           var b, g, r;
-          if (type(num) === "number" && num >= 0 && num <= 16777215) {
+          if (type(num) === "number" &amp;&amp; num >= 0 &amp;&amp; num &lt;= 16777215) {
             r = num >> 16;
-            g = num >> 8 & 255;
-            b = num & 255;
+            g = num >> 8 &amp; 255;
+            b = num &amp; 255;
             return [r, g, b, 1];
           }
           console.warn("unknown num color: " + num);
@@ -3985,7 +4013,7 @@ var Chalks = (() => {
         rgb2num = function() {
           var b, g, r, ref;
           ref = unpack(arguments), r = ref[0], g = ref[1], b = ref[2];
-          return (r << 16) + (g << 8) + b;
+          return (r &lt;&lt; 16) + (g &lt;&lt; 8) + b;
         };
         chroma.num = function(num) {
           return new Color(num, "num");
@@ -4000,7 +4028,7 @@ var Chalks = (() => {
         _guess_formats.push({
           p: 1,
           test: function(n) {
-            if (arguments.length === 1 && type(n) === "number" && n >= 0 && n <= 16777215) {
+            if (arguments.length === 1 &amp;&amp; type(n) === "number" &amp;&amp; n >= 0 &amp;&amp; n &lt;= 16777215) {
               return "num";
             }
           }
@@ -4021,7 +4049,7 @@ var Chalks = (() => {
             if (h > 360) {
               h -= 360;
             }
-            if (h < 0) {
+            if (h &lt; 0) {
               h += 360;
             }
             h /= 60;
@@ -4074,7 +4102,7 @@ var Chalks = (() => {
               h = 4 + (r - g) / delta;
             }
             h *= 60;
-            if (h < 0) {
+            if (h &lt; 0) {
               h += 360;
             }
           }
@@ -4095,29 +4123,29 @@ var Chalks = (() => {
         css2rgb = function(css) {
           var aa, ab, hsl, i, m2, o, rgb, w;
           css = css.toLowerCase();
-          if (chroma.colors != null && chroma.colors[css]) {
+          if (chroma.colors != null &amp;&amp; chroma.colors[css]) {
             return hex2rgb(chroma.colors[css]);
           }
           if (m2 = css.match(/rgb\(\s*(\-?\d+),\s*(\-?\d+)\s*,\s*(\-?\d+)\s*\)/)) {
             rgb = m2.slice(1, 4);
-            for (i = o = 0; o <= 2; i = ++o) {
+            for (i = o = 0; o &lt;= 2; i = ++o) {
               rgb[i] = +rgb[i];
             }
             rgb[3] = 1;
           } else if (m2 = css.match(/rgba\(\s*(\-?\d+),\s*(\-?\d+)\s*,\s*(\-?\d+)\s*,\s*([01]|[01]?\.\d+)\)/)) {
             rgb = m2.slice(1, 5);
-            for (i = w = 0; w <= 3; i = ++w) {
+            for (i = w = 0; w &lt;= 3; i = ++w) {
               rgb[i] = +rgb[i];
             }
           } else if (m2 = css.match(/rgb\(\s*(\-?\d+(?:\.\d+)?)%,\s*(\-?\d+(?:\.\d+)?)%\s*,\s*(\-?\d+(?:\.\d+)?)%\s*\)/)) {
             rgb = m2.slice(1, 4);
-            for (i = aa = 0; aa <= 2; i = ++aa) {
+            for (i = aa = 0; aa &lt;= 2; i = ++aa) {
               rgb[i] = round(rgb[i] * 2.55);
             }
             rgb[3] = 1;
           } else if (m2 = css.match(/rgba\(\s*(\-?\d+(?:\.\d+)?)%,\s*(\-?\d+(?:\.\d+)?)%\s*,\s*(\-?\d+(?:\.\d+)?)%\s*,\s*([01]|[01]?\.\d+)\)/)) {
             rgb = m2.slice(1, 5);
-            for (i = ab = 0; ab <= 2; i = ++ab) {
+            for (i = ab = 0; ab &lt;= 2; i = ++ab) {
               rgb[i] = round(rgb[i] * 2.55);
             }
             rgb[3] = +rgb[3];
@@ -4138,7 +4166,7 @@ var Chalks = (() => {
         };
         rgb2css = function(rgba) {
           var mode;
-          mode = rgba[3] < 1 ? "rgba" : "rgb";
+          mode = rgba[3] &lt; 1 ? "rgba" : "rgb";
           if (mode === "rgb") {
             return mode + "(" + rgba.slice(0, 3).map(round).join(",") + ")";
           } else if (mode === "rgba") {
@@ -4151,7 +4179,7 @@ var Chalks = (() => {
         };
         hsl2css = function(hsl, alpha) {
           var mode;
-          mode = alpha < 1 ? "hsla" : "hsl";
+          mode = alpha &lt; 1 ? "hsla" : "hsl";
           hsl[0] = rnd(hsl[0] || 0);
           hsl[1] = rnd(hsl[1] * 100) + "%";
           hsl[2] = rnd(hsl[2] * 100) + "%";
@@ -4187,7 +4215,7 @@ var Chalks = (() => {
         _guess_formats.push({
           p: 5,
           test: function(n) {
-            if (arguments.length === 1 && w3cx11[n] != null) {
+            if (arguments.length === 1 &amp;&amp; w3cx11[n] != null) {
               return "named";
             }
           }
@@ -4271,7 +4299,7 @@ var Chalks = (() => {
           g = g / 255;
           b = b / 255;
           k = 1 - Math.max(r, Math.max(g, b));
-          f = k < 1 ? 1 / (1 - k) : 0;
+          f = k &lt; 1 ? 1 / (1 - k) : 0;
           c = (1 - r - k) * f;
           m2 = (1 - g - k) * f;
           y = (1 - b - k) * f;
@@ -4316,7 +4344,7 @@ var Chalks = (() => {
             }
             return results;
           }).apply(this, arguments);
-          for (i = o = 0; o <= 2; i = ++o) {
+          for (i = o = 0; o &lt;= 2; i = ++o) {
             rgb[i] *= 255;
           }
           return rgb;
@@ -4344,7 +4372,7 @@ var Chalks = (() => {
         };
         luminance_x = function(x) {
           x /= 255;
-          if (x <= 0.03928) {
+          if (x &lt;= 0.03928) {
             return x / 12.92;
           } else {
             return pow((x + 0.055) / 1.055, 2.4);
@@ -4378,7 +4406,7 @@ var Chalks = (() => {
               var lm, m2;
               m2 = l.interpolate(h, 0.5, mode);
               lm = m2.luminance();
-              if (Math.abs(lum - lm) < eps || !max_iter--) {
+              if (Math.abs(lum - lm) &lt; eps || !max_iter--) {
                 return m2;
               }
               if (lm > lum) {
@@ -4397,10 +4425,10 @@ var Chalks = (() => {
         temperature2rgb = function(kelvin) {
           var b, g, r, temp;
           temp = kelvin / 100;
-          if (temp < 66) {
+          if (temp &lt; 66) {
             r = 255;
             g = -155.25485562709179 - 0.44596950469579133 * (g = temp - 2) + 104.49216199393888 * log(g);
-            b = temp < 20 ? 0 : -254.76935184120902 + 0.8274096064007395 * (b = temp - 10) + 115.67994401066147 * log(b);
+            b = temp &lt; 20 ? 0 : -254.76935184120902 + 0.8274096064007395 * (b = temp - 10) + 115.67994401066147 * log(b);
           } else {
             r = 351.97690566805693 + 0.114206453784165 * (r = temp - 55) - 40.25366309332127 * log(r);
             g = 325.4494125711974 + 0.07943456536662342 * (g = temp - 50) - 28.0852963507957 * log(g);
@@ -4492,16 +4520,16 @@ var Chalks = (() => {
           ref3 = b.lab(), L2 = ref3[0], a2 = ref3[1], b2 = ref3[2];
           c1 = sqrt(a1 * a1 + b1 * b1);
           c2 = sqrt(a2 * a2 + b2 * b2);
-          sl = L1 < 16 ? 0.511 : 0.040975 * L1 / (1 + 0.01765 * L1);
+          sl = L1 &lt; 16 ? 0.511 : 0.040975 * L1 / (1 + 0.01765 * L1);
           sc = 0.0638 * c1 / (1 + 0.0131 * c1) + 0.638;
-          h1 = c1 < 1e-6 ? 0 : atan2(b1, a1) * 180 / PI;
-          while (h1 < 0) {
+          h1 = c1 &lt; 1e-6 ? 0 : atan2(b1, a1) * 180 / PI;
+          while (h1 &lt; 0) {
             h1 += 360;
           }
           while (h1 >= 360) {
             h1 -= 360;
           }
-          t = h1 >= 164 && h1 <= 345 ? 0.56 + abs(0.2 * cos(PI * (h1 + 168) / 180)) : 0.36 + abs(0.4 * cos(PI * (h1 + 35) / 180));
+          t = h1 >= 164 &amp;&amp; h1 &lt;= 345 ? 0.56 + abs(0.2 * cos(PI * (h1 + 168) / 180)) : 0.36 + abs(0.4 * cos(PI * (h1 + 35) / 180));
           c4 = c1 * c1 * c1 * c1;
           f = sqrt(c4 / (c4 + 1900));
           sh = sc * (f * t + 1 - f);
@@ -4602,7 +4630,7 @@ var Chalks = (() => {
           me = this;
           lch = me.lch();
           lch[1] += amount * LAB_CONSTANTS.Kn;
-          if (lch[1] < 0) {
+          if (lch[1] &lt; 0) {
             lch[1] = 0;
           }
           return chroma.lch(lch).alpha(me.alpha());
@@ -4637,7 +4665,7 @@ var Chalks = (() => {
           return function(c0, c1) {
             var i, o, out;
             out = [];
-            for (i = o = 0; o <= 3; i = ++o) {
+            for (i = o = 0; o &lt;= 3; i = ++o) {
               out[i] = f(c0[i], c1[i]);
             }
             return out;
@@ -4667,7 +4695,7 @@ var Chalks = (() => {
           return 255 * (1 - (1 - a / 255) * (1 - b / 255));
         };
         overlay = function(a, b) {
-          if (b < 128) {
+          if (b &lt; 128) {
             return 2 * a * b / 255;
           } else {
             return 255 * (1 - 2 * (1 - a / 255) * (1 - b / 255));
@@ -4705,12 +4733,12 @@ var Chalks = (() => {
             values: [],
             count: 0
           };
-          for (o = 0, len = data.length; o < len; o++) {
+          for (o = 0, len = data.length; o &lt; len; o++) {
             val = data[o];
-            if (val != null && !isNaN(val)) {
+            if (val != null &amp;&amp; !isNaN(val)) {
               r.values.push(val);
               r.sum += val;
-              if (val < r.min) {
+              if (val &lt; r.min) {
                 r.min = val;
               }
               if (val > r.max) {
@@ -4748,7 +4776,7 @@ var Chalks = (() => {
             if (colors3 == null) {
               colors3 = ["#fff", "#000"];
             }
-            if (colors3 != null && type(colors3) === "string" && chroma.brewer != null) {
+            if (colors3 != null &amp;&amp; type(colors3) === "string" &amp;&amp; chroma.brewer != null) {
               colors3 = chroma.brewer[colors3] || chroma.brewer[colors3.toLowerCase()] || colors3;
             }
             if (type(colors3) === "array") {
@@ -4756,14 +4784,14 @@ var Chalks = (() => {
                 colors3 = [colors3[0], colors3[0]];
               }
               colors3 = colors3.slice(0);
-              for (c = o = 0, ref = colors3.length - 1; 0 <= ref ? o <= ref : o >= ref; c = 0 <= ref ? ++o : --o) {
+              for (c = o = 0, ref = colors3.length - 1; 0 &lt;= ref ? o &lt;= ref : o >= ref; c = 0 &lt;= ref ? ++o : --o) {
                 col = colors3[c];
                 if (type(col) === "string") {
                   colors3[c] = chroma(col);
                 }
               }
               _pos.length = 0;
-              for (c = w = 0, ref1 = colors3.length - 1; 0 <= ref1 ? w <= ref1 : w >= ref1; c = 0 <= ref1 ? ++w : --w) {
+              for (c = w = 0, ref1 = colors3.length - 1; 0 &lt;= ref1 ? w &lt;= ref1 : w >= ref1; c = 0 &lt;= ref1 ? ++w : --w) {
                 _pos.push(c / (colors3.length - 1));
               }
             }
@@ -4775,7 +4803,7 @@ var Chalks = (() => {
             if (_classes != null) {
               n = _classes.length - 1;
               i = 0;
-              while (i < n && value >= _classes[i]) {
+              while (i &lt; n &amp;&amp; value >= _classes[i]) {
                 i++;
               }
               return i - 1;
@@ -4806,7 +4834,7 @@ var Chalks = (() => {
               return _nacol;
             }
             if (!bypassMap) {
-              if (_classes && _classes.length > 2) {
+              if (_classes &amp;&amp; _classes.length > 2) {
                 c = getClass(val);
                 t = c / (_classes.length - 2);
               } else if (_max !== _min) {
@@ -4826,21 +4854,21 @@ var Chalks = (() => {
             t = _padding[0] + t * (1 - _padding[0] - _padding[1]);
             t = Math.min(1, Math.max(0, t));
             k = Math.floor(t * 1e4);
-            if (_useCache && _colorCache[k]) {
+            if (_useCache &amp;&amp; _colorCache[k]) {
               col = _colorCache[k];
             } else {
               if (type(_colors) === "array") {
-                for (i = o = 0, ref = _pos.length - 1; 0 <= ref ? o <= ref : o >= ref; i = 0 <= ref ? ++o : --o) {
+                for (i = o = 0, ref = _pos.length - 1; 0 &lt;= ref ? o &lt;= ref : o >= ref; i = 0 &lt;= ref ? ++o : --o) {
                   p = _pos[i];
-                  if (t <= p) {
+                  if (t &lt;= p) {
                     col = _colors[i];
                     break;
                   }
-                  if (t >= p && i === _pos.length - 1) {
+                  if (t >= p &amp;&amp; i === _pos.length - 1) {
                     col = _colors[i];
                     break;
                   }
-                  if (t > p && t < _pos[i + 1]) {
+                  if (t > p &amp;&amp; t &lt; _pos[i + 1]) {
                     t = (t - p) / (_pos[i + 1] - p);
                     col = chroma.interpolate(_colors[i], _colors[i + 1], t, _mode);
                     break;
@@ -4862,7 +4890,7 @@ var Chalks = (() => {
           f = function(v) {
             var c;
             c = chroma(getColor(v));
-            if (_out && c[_out]) {
+            if (_out &amp;&amp; c[_out]) {
               return c[_out]();
             } else {
               return c;
@@ -4895,13 +4923,13 @@ var Chalks = (() => {
             _max = domain[domain.length - 1];
             _pos = [];
             k = _colors.length;
-            if (domain.length === k && _min !== _max) {
-              for (o = 0, len = domain.length; o < len; o++) {
+            if (domain.length === k &amp;&amp; _min !== _max) {
+              for (o = 0, len = domain.length; o &lt; len; o++) {
                 d = domain[o];
                 _pos.push((d - _min) / (_max - _min));
               }
             } else {
-              for (c = w = 0, ref = k - 1; 0 <= ref ? w <= ref : w >= ref; c = 0 <= ref ? ++w : --w) {
+              for (c = w = 0, ref = k - 1; 0 &lt;= ref ? w &lt;= ref : w >= ref; c = 0 &lt;= ref ? ++w : --w) {
                 _pos.push(c / (k - 1));
               }
             }
@@ -4949,12 +4977,12 @@ var Chalks = (() => {
                 t0 = 0;
                 t1 = 1;
                 max_iter = 20;
-                while (Math.abs(L_diff) > 0.01 && max_iter-- > 0) {
+                while (Math.abs(L_diff) > 0.01 &amp;&amp; max_iter-- > 0) {
                   (function() {
                     if (pol) {
                       L_diff *= -1;
                     }
-                    if (L_diff < 0) {
+                    if (L_diff &lt; 0) {
                       t0 = t;
                       t += (t1 - t) * 0.5;
                     } else {
@@ -4987,7 +5015,7 @@ var Chalks = (() => {
           };
           f.colors = function(numColors, out) {
             var dd, dm, i, o, ref, result, results, samples, w;
-            if (arguments.length < 2) {
+            if (arguments.length &lt; 2) {
               out = "hex";
             }
             result = [];
@@ -5000,7 +5028,7 @@ var Chalks = (() => {
               dd = _domain[1] - dm;
               result = (function() {
                 results = [];
-                for (var o2 = 0; 0 <= numColors ? o2 < numColors : o2 > numColors; 0 <= numColors ? o2++ : o2--) {
+                for (var o2 = 0; 0 &lt;= numColors ? o2 &lt; numColors : o2 > numColors; 0 &lt;= numColors ? o2++ : o2--) {
                   results.push(o2);
                 }
                 return results;
@@ -5010,8 +5038,8 @@ var Chalks = (() => {
             } else {
               colors2 = [];
               samples = [];
-              if (_classes && _classes.length > 2) {
-                for (i = w = 1, ref = _classes.length; 1 <= ref ? w < ref : w > ref; i = 1 <= ref ? ++w : --w) {
+              if (_classes &amp;&amp; _classes.length > 2) {
+                for (i = w = 1, ref = _classes.length; 1 &lt;= ref ? w &lt; ref : w > ref; i = 1 &lt;= ref ? ++w : --w) {
                   samples.push((_classes[i - 1] + _classes[i]) * 0.5);
                 }
               } else {
@@ -5078,10 +5106,10 @@ var Chalks = (() => {
             };
           }
           add = function(val2) {
-            if (val2 != null && !isNaN(val2)) {
+            if (val2 != null &amp;&amp; !isNaN(val2)) {
               r.values.push(val2);
               r.sum += val2;
-              if (val2 < r.min) {
+              if (val2 &lt; r.min) {
                 r.min = val2;
               }
               if (val2 > r.max) {
@@ -5092,9 +5120,9 @@ var Chalks = (() => {
           };
           visit = function(val2, k2) {
             if (filter(val2, k2)) {
-              if (key != null && type(key) === "function") {
+              if (key != null &amp;&amp; type(key) === "function") {
                 return add(key(val2));
-              } else if (key != null && type(key) === "string" || type(key) === "number") {
+              } else if (key != null &amp;&amp; type(key) === "string" || type(key) === "number") {
                 return add(val2[key]);
               } else {
                 return add(val2);
@@ -5102,7 +5130,7 @@ var Chalks = (() => {
             }
           };
           if (type(data) === "array") {
-            for (o = 0, len = data.length; o < len; o++) {
+            for (o = 0, len = data.length; o &lt; len; o++) {
               val = data[o];
               visit(val);
             }
@@ -5145,24 +5173,24 @@ var Chalks = (() => {
           }
           if (mode.substr(0, 1) === "e") {
             limits.push(min);
-            for (i = o = 1, ref = num - 1; 1 <= ref ? o <= ref : o >= ref; i = 1 <= ref ? ++o : --o) {
+            for (i = o = 1, ref = num - 1; 1 &lt;= ref ? o &lt;= ref : o >= ref; i = 1 &lt;= ref ? ++o : --o) {
               limits.push(min + i / num * (max - min));
             }
             limits.push(max);
           } else if (mode.substr(0, 1) === "l") {
-            if (min <= 0) {
+            if (min &lt;= 0) {
               throw "Logarithmic scales are only possible for values > 0";
             }
             min_log = Math.LOG10E * log(min);
             max_log = Math.LOG10E * log(max);
             limits.push(min);
-            for (i = w = 1, ref1 = num - 1; 1 <= ref1 ? w <= ref1 : w >= ref1; i = 1 <= ref1 ? ++w : --w) {
+            for (i = w = 1, ref1 = num - 1; 1 &lt;= ref1 ? w &lt;= ref1 : w >= ref1; i = 1 &lt;= ref1 ? ++w : --w) {
               limits.push(pow(10, min_log + i / num * (max_log - min_log)));
             }
             limits.push(max);
           } else if (mode.substr(0, 1) === "q") {
             limits.push(min);
-            for (i = aa = 1, ref2 = num - 1; 1 <= ref2 ? aa <= ref2 : aa >= ref2; i = 1 <= ref2 ? ++aa : --aa) {
+            for (i = aa = 1, ref2 = num - 1; 1 &lt;= ref2 ? aa &lt;= ref2 : aa >= ref2; i = 1 &lt;= ref2 ? ++aa : --aa) {
               p = (values.length - 1) * i / num;
               pb = floor(p);
               if (pb === p) {
@@ -5182,20 +5210,20 @@ var Chalks = (() => {
             centroids = null;
             centroids = [];
             centroids.push(min);
-            for (i = ab = 1, ref3 = num - 1; 1 <= ref3 ? ab <= ref3 : ab >= ref3; i = 1 <= ref3 ? ++ab : --ab) {
+            for (i = ab = 1, ref3 = num - 1; 1 &lt;= ref3 ? ab &lt;= ref3 : ab >= ref3; i = 1 &lt;= ref3 ? ++ab : --ab) {
               centroids.push(min + i / num * (max - min));
             }
             centroids.push(max);
             while (repeat) {
-              for (j = ac = 0, ref4 = num - 1; 0 <= ref4 ? ac <= ref4 : ac >= ref4; j = 0 <= ref4 ? ++ac : --ac) {
+              for (j = ac = 0, ref4 = num - 1; 0 &lt;= ref4 ? ac &lt;= ref4 : ac >= ref4; j = 0 &lt;= ref4 ? ++ac : --ac) {
                 clusterSizes[j] = 0;
               }
-              for (i = ad = 0, ref5 = n - 1; 0 <= ref5 ? ad <= ref5 : ad >= ref5; i = 0 <= ref5 ? ++ad : --ad) {
+              for (i = ad = 0, ref5 = n - 1; 0 &lt;= ref5 ? ad &lt;= ref5 : ad >= ref5; i = 0 &lt;= ref5 ? ++ad : --ad) {
                 value = values[i];
                 mindist = Number.MAX_VALUE;
-                for (j = ae = 0, ref6 = num - 1; 0 <= ref6 ? ae <= ref6 : ae >= ref6; j = 0 <= ref6 ? ++ae : --ae) {
+                for (j = ae = 0, ref6 = num - 1; 0 &lt;= ref6 ? ae &lt;= ref6 : ae >= ref6; j = 0 &lt;= ref6 ? ++ae : --ae) {
                   dist = abs(centroids[j] - value);
-                  if (dist < mindist) {
+                  if (dist &lt; mindist) {
                     mindist = dist;
                     best = j;
                   }
@@ -5204,10 +5232,10 @@ var Chalks = (() => {
                 assignments[i] = best;
               }
               newCentroids = new Array(num);
-              for (j = af = 0, ref7 = num - 1; 0 <= ref7 ? af <= ref7 : af >= ref7; j = 0 <= ref7 ? ++af : --af) {
+              for (j = af = 0, ref7 = num - 1; 0 &lt;= ref7 ? af &lt;= ref7 : af >= ref7; j = 0 &lt;= ref7 ? ++af : --af) {
                 newCentroids[j] = null;
               }
-              for (i = ag = 0, ref8 = n - 1; 0 <= ref8 ? ag <= ref8 : ag >= ref8; i = 0 <= ref8 ? ++ag : --ag) {
+              for (i = ag = 0, ref8 = n - 1; 0 &lt;= ref8 ? ag &lt;= ref8 : ag >= ref8; i = 0 &lt;= ref8 ? ++ag : --ag) {
                 cluster = assignments[i];
                 if (newCentroids[cluster] === null) {
                   newCentroids[cluster] = values[i];
@@ -5215,11 +5243,11 @@ var Chalks = (() => {
                   newCentroids[cluster] += values[i];
                 }
               }
-              for (j = ah = 0, ref9 = num - 1; 0 <= ref9 ? ah <= ref9 : ah >= ref9; j = 0 <= ref9 ? ++ah : --ah) {
+              for (j = ah = 0, ref9 = num - 1; 0 &lt;= ref9 ? ah &lt;= ref9 : ah >= ref9; j = 0 &lt;= ref9 ? ++ah : --ah) {
                 newCentroids[j] *= 1 / clusterSizes[j];
               }
               repeat = false;
-              for (j = ai = 0, ref10 = num - 1; 0 <= ref10 ? ai <= ref10 : ai >= ref10; j = 0 <= ref10 ? ++ai : --ai) {
+              for (j = ai = 0, ref10 = num - 1; 0 &lt;= ref10 ? ai &lt;= ref10 : ai >= ref10; j = 0 &lt;= ref10 ? ++ai : --ai) {
                 if (newCentroids[j] !== centroids[i]) {
                   repeat = true;
                   break;
@@ -5232,15 +5260,15 @@ var Chalks = (() => {
               }
             }
             kClusters = {};
-            for (j = aj = 0, ref11 = num - 1; 0 <= ref11 ? aj <= ref11 : aj >= ref11; j = 0 <= ref11 ? ++aj : --aj) {
+            for (j = aj = 0, ref11 = num - 1; 0 &lt;= ref11 ? aj &lt;= ref11 : aj >= ref11; j = 0 &lt;= ref11 ? ++aj : --aj) {
               kClusters[j] = [];
             }
-            for (i = ak = 0, ref12 = n - 1; 0 <= ref12 ? ak <= ref12 : ak >= ref12; i = 0 <= ref12 ? ++ak : --ak) {
+            for (i = ak = 0, ref12 = n - 1; 0 &lt;= ref12 ? ak &lt;= ref12 : ak >= ref12; i = 0 &lt;= ref12 ? ++ak : --ak) {
               cluster = assignments[i];
               kClusters[cluster].push(values[i]);
             }
             tmpKMeansBreaks = [];
-            for (j = al = 0, ref13 = num - 1; 0 <= ref13 ? al <= ref13 : al >= ref13; j = 0 <= ref13 ? ++al : --al) {
+            for (j = al = 0, ref13 = num - 1; 0 &lt;= ref13 ? al &lt;= ref13 : al >= ref13; j = 0 &lt;= ref13 ? ++al : --al) {
               tmpKMeansBreaks.push(kClusters[j][0]);
               tmpKMeansBreaks.push(kClusters[j][kClusters[j].length - 1]);
             }
@@ -5248,9 +5276,9 @@ var Chalks = (() => {
               return a - b;
             });
             limits.push(tmpKMeansBreaks[0]);
-            for (i = am = 1, ref14 = tmpKMeansBreaks.length - 1; am <= ref14; i = am += 2) {
+            for (i = am = 1, ref14 = tmpKMeansBreaks.length - 1; am &lt;= ref14; i = am += 2) {
               v = tmpKMeansBreaks[i];
-              if (!isNaN(v) && limits.indexOf(v) === -1) {
+              if (!isNaN(v) &amp;&amp; limits.indexOf(v) === -1) {
                 limits.push(v);
               }
             }
@@ -5265,11 +5293,11 @@ var Chalks = (() => {
             h = 0;
           }
           h /= 360;
-          if (h < 1 / 3) {
+          if (h &lt; 1 / 3) {
             b = (1 - s) / 3;
             r = (1 + s * cos(TWOPI * h) / cos(PITHIRD - TWOPI * h)) / 3;
             g = 1 - (b + r);
-          } else if (h < 2 / 3) {
+          } else if (h &lt; 2 / 3) {
             h -= 1 / 3;
             r = (1 - s) / 3;
             g = (1 + s * cos(TWOPI * h) / cos(PITHIRD - TWOPI * h)) / 3;
@@ -5343,10 +5371,10 @@ var Chalks = (() => {
             hue0 = xyz0[0], sat0 = xyz0[1], lbv0 = xyz0[2];
             hue1 = xyz1[0], sat1 = xyz1[1], lbv1 = xyz1[2];
           }
-          if (!isNaN(hue0) && !isNaN(hue1)) {
-            if (hue1 > hue0 && hue1 - hue0 > 180) {
+          if (!isNaN(hue0) &amp;&amp; !isNaN(hue1)) {
+            if (hue1 > hue0 &amp;&amp; hue1 - hue0 > 180) {
               dh = hue1 - (hue0 + 360);
-            } else if (hue1 < hue0 && hue0 - hue1 > 180) {
+            } else if (hue1 &lt; hue0 &amp;&amp; hue0 - hue1 > 180) {
               dh = hue1 + 360 - hue0;
             } else {
               dh = hue1 - hue0;
@@ -5354,12 +5382,12 @@ var Chalks = (() => {
             hue = hue0 + f * dh;
           } else if (!isNaN(hue0)) {
             hue = hue0;
-            if ((lbv1 === 1 || lbv1 === 0) && m2 !== "hsv") {
+            if ((lbv1 === 1 || lbv1 === 0) &amp;&amp; m2 !== "hsv") {
               sat = sat0;
             }
           } else if (!isNaN(hue1)) {
             hue = hue1;
-            if ((lbv0 === 1 || lbv0 === 0) && m2 !== "hsv") {
+            if ((lbv0 === 1 || lbv0 === 0) &amp;&amp; m2 !== "hsv") {
               sat = sat1;
             }
           } else {
@@ -5375,7 +5403,7 @@ var Chalks = (() => {
           var len, o, ref, results;
           ref = ["hsv", "hsl", "hsi", "hcl", "lch", "hcg"];
           results = [];
-          for (o = 0, len = ref.length; o < len; o++) {
+          for (o = 0, len = ref.length; o &lt; len; o++) {
             m = ref[o];
             results.push([m, interpolate_hsx]);
           }
@@ -5417,7 +5445,7 @@ var Chalks = (() => {
         constructor(params = {}, style = {}) {
           this.start = Date.now();
           this.scale = params.scale || 1;
-          if (params.width && params.height) {
+          if (params.width &amp;&amp; params.height) {
             this.width = params.width * this.scale;
             this.height = params.height * this.scale;
             this.p5canvas = createCanvas(this.width, this.height);
@@ -5618,3 +5646,26 @@ chroma-js/chroma.js:
       @preserve
    *)
 */
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Aug 22 2026 10:03:55 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

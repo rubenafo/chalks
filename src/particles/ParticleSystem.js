@@ -119,9 +119,6 @@ class ParticleSystem {
     return this.fields.length;
   }
 
-  // Returns the particle's list
-  getParticles () { return this.particles; }
-
   // This method triggers a particle generation on each registered Emitter and then updates
   // the particles position according to the registered Fields.
   evolve (steps) {

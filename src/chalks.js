@@ -31,7 +31,7 @@ class Scene {
         this.p5canvas = p5.instance.canvas
         debug (`reusing existing canvas ${this.width}x${this.height}`)
     }
-    this.canvas = document.getElementById('defaultCanvas0');
+    this.canvas = p5.instance.canvas;
     this.ctx = this.canvas.getContext("2d")
     this.seed = params.seed ? params.seed : (Math.random() * 10000).toString().substr(5, 8)
     debug("using seed=" + this.seed)
@@ -140,9 +140,9 @@ class Scene {
  * Copy + add. Creates a new vector and adds x,y,z
  */
 p5.Vector.prototype.cadd = function (x,y,z) {
-  let vx = typeof(x) === "function" ? x() : x
-  let vy = typeof(y) === "function" ? y() : y
-  let vz = typeof(z) === "function" ? z() : z
+  let vx = typeof(x) === "function" ? x() : (x || 0)
+  let vy = typeof(y) === "function" ? y() : (y || 0)
+  let vz = typeof(z) === "function" ? z() : (z || 0)
   return createVector(this.x, this.y, this.z).add(vx, vy, vz)
 }
 

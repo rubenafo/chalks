@@ -4,10 +4,10 @@
   "description": "A set of utility methods and classes on top of p5js",
   "main": "dist/chalks.min.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha test/",
     "start": "node server.js",
-    "build": "browserify ./src/chalks.js --standalone Chalks | uglifyjs -cm > dist/chalks.min.js && browserify ./src/chalks.js --standalone Chalks > dist/chalks.dev.js",
-    "docs": "rm -Rf docs && node ./node_modules/jsdoc/jsdoc.js ./dist/chalks.dev.js -d docs"
+    "build": "node scripts/build.mjs",
+    "docs": "rm -Rf docs/api && node ./node_modules/jsdoc/jsdoc.js ./dist/chalks.dev.js -d docs/api"
   },
   "repository": {
     "type": "git",
@@ -28,15 +28,14 @@
     "url": "https://github.com/rubenafo/chalks/issues"
   },
   "homepage": "https://github.com/rubenafo/chalks#readme",
-  "dependencies": {},
-  "devDependencies": {
-    "babel-preset-env": "^1.7.0",
-    "browserify": "^16.2.2",
+  "dependencies": {
     "chroma-js": "^1.4.0",
+    "voronoi": "^1.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
     "mocha": "^5.2.0",
     "png-metadata": "^1.0.2",
-    "uglify-es": "^3.3.9",
-    "voronoi": "^1.0.0",
     "jsdoc": "3.5.5"
   }
 }

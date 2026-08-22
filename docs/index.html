@@ -1,65 +1,302 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chalks</title>
+<meta name="description" content="A thin, independent library on top of p5.js for generative art: paths, parametric curves, layouts, grammars, particles.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f13;
+    --bg-raised: #15171e;
+    --border: #262933;
+    --text: #eef0f5;
+    --text-dim: #9aa0b0;
+    --accent: #66fcf1;
+    --accent-2: #f45b69;
+    --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+    --sans: "Space Grotesk", system-ui, sans-serif;
+  }
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.55;
+  }
+
+  a { color: var(--accent); }
+
+  header {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 72px 24px 40px;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 4px 12px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: clamp(40px, 7vw, 64px);
+    margin: 0 0 16px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  h1 span { color: var(--accent); }
+
+  header p {
+    max-width: 640px;
+    color: var(--text-dim);
+    font-size: 17px;
+  }
+
+  .links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+  }
+
+  .links a {
+    text-decoration: none;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 16px;
+    font-size: 14px;
+    font-family: var(--mono);
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .links a:hover { border-color: var(--accent); color: var(--accent); }
+  .links a.primary { background: var(--accent); color: #0e0f13; border-color: var(--accent); font-weight: 500; }
+  .links a.primary:hover { opacity: 0.88; color: #0e0f13; }
+
+  main {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px 100px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 28px;
+  }
+
+  .card {
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .canvas-wrap {
+    aspect-ratio: 1 / 1;
+    background: #0b0c10;
+    display: block;
+  }
+
+  .canvas-wrap iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  .card-body { padding: 18px 20px 6px; }
+
+  .card h2 {
+    font-size: 17px;
+    margin: 0 0 6px;
+    font-weight: 600;
+  }
+
+  .card .module {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .card p {
+    color: var(--text-dim);
+    font-size: 14px;
+    margin: 8px 0 0;
+  }
+
+  details { margin: 10px 0 0; }
+
+  summary {
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    padding: 12px 0;
+    list-style: none;
+    user-select: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::before { content: "▸ "; color: var(--accent); }
+  details[open] summary::before { content: "▾ "; }
+
+  pre {
+    margin: 0 0 18px;
+    background: #0b0c10;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-size: 12.5px;
+  }
+
+  code {
+    font-family: var(--mono);
+    color: #d5d9e3;
+    white-space: pre;
+  }
+
+  footer {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    color: var(--text-dim);
+    font-size: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  footer a { color: var(--text-dim); }
+  footer a:hover { color: var(--accent); }
+</style>
 </head>
-
 <body>
 
-<div id="main">
+<header>
+  <div class="badge">p5.js addon &middot; v0.5.0</div>
+  <h1>Chalks<span>.</span></h1>
+  <p>
+    A thin, independent library on top of <a href="https://p5js.org">p5.js</a> for generative art:
+    a fluent path builder, parametric curves and strange attractors, point layouts, a masonry grammar,
+    a rule-based generative engine, and a small particle system &mdash; with color handled by
+    <a href="https://gka.github.io/chroma.js/">chroma.js</a>. Every canvas below is running live, real
+    chalks code, right now, in your browser.
+  </p>
+  <div class="links">
+    <a class="primary" href="https://github.com/rubenafo/chalks">GitHub</a>
+    <a href="https://www.npmjs.com/package/chalks">npm i chalks</a>
+    <a href="api/">API docs</a>
+  </div>
+</header>
 
-    <h1 class="page-title">Home</h1>
-
-    
-
-
-
-    
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-</div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Layout.html">Layout</a></li><li><a href="Parametrics.html">Parametrics</a></li></ul>
-</nav>
-
-<br class="clear">
+<main>
+  <div class="grid" id="grid"></div>
+</main>
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Jul 14 2019 13:20:42 GMT+0100 (Irish Standard Time)
+  Built by <a href="https://rubenafo.com">Ruben Afonso</a> &middot; Apache-2.0 licensed &middot;
+  every demo on this page is a standalone file under
+  <a href="https://github.com/rubenafo/chalks/tree/master/docs/demos">/docs/demos</a>.
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script>
+  const demos = [
+    {
+      id: "path-color",
+      module: "Path / chroma-js",
+      title: "Fluent paths & color",
+      desc: "The chainable Path builder: rects, a gradient-filled circle with a shadow, colors from a chroma.js scale."
+    },
+    {
+      id: "attractors",
+      module: "Parametrics",
+      title: "Strange attractors",
+      desc: "De Jong (an iterated map, drawn as a point scatter) and the Lorenz system (a smooth flow, drawn as one path)."
+    },
+    {
+      id: "curves",
+      module: "Parametrics",
+      title: "Parametric curves",
+      desc: "Butterfly curve, hypocycloid, and rose curve layered around a shared center."
+    },
+    {
+      id: "voronoi",
+      module: "Parametrics",
+      title: "Voronoi diagram",
+      desc: "Cell regions computed over 40 random sites, each cell filled from a chroma.js scale."
+    },
+    {
+      id: "layout",
+      module: "Layout",
+      title: "Point layouts",
+      desc: "grid(), spiral() colored by radius, and rof3() (rule of thirds) composed on one canvas."
+    },
+    {
+      id: "masonry",
+      module: "Layout.masonry",
+      title: "Masonry grammar",
+      desc: "A brick layout produced entirely from a short grammar string: \"|3-2>1|2>2-3\"."
+    },
+    {
+      id: "grammar",
+      module: "Grammar",
+      title: "Rule-based generation",
+      desc: "A branching tree grown by a Grammar instance -- each take() call enqueues one more segment."
+    },
+    {
+      id: "particles",
+      module: "Particles",
+      title: "Particle system",
+      desc: "An emitter stream pulled toward a field, animated live -- watch it curve in over a few seconds."
+    }
+  ]
+
+  const grid = document.getElementById("grid")
+
+  demos.forEach(d => {
+    const card = document.createElement("div")
+    card.className = "card"
+    card.innerHTML = `
+      <div class="canvas-wrap"><iframe src="demos/${d.id}.html" loading="lazy" title="${d.title}"></iframe></div>
+      <div class="card-body">
+        <div class="module">${d.module}</div>
+        <h2>${d.title}</h2>
+        <p>${d.desc}</p>
+        <details>
+          <summary>View source</summary>
+          <pre><code class="lang-js" id="src-${d.id}">Loading&hellip;</code></pre>
+        </details>
+      </div>
+    `
+    grid.appendChild(card)
+
+    const codeEl = card.querySelector(`#src-${d.id}`)
+    const details = card.querySelector("details")
+    details.addEventListener("toggle", () => {
+      if (details.open && codeEl.dataset.loaded !== "1") {
+        fetch(`demos/${d.id}.js`)
+          .then(r => r.text())
+          .then(txt => { codeEl.textContent = txt; codeEl.dataset.loaded = "1" })
+          .catch(() => { codeEl.textContent = "Could not load source." })
+      }
+    })
+  })
+</script>
+
 </body>
 </html>
