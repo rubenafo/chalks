@@ -4,6 +4,7 @@ let Path = require("./Path")
 let Parametrics = require("./Parametrics")
 let Grammar = require ("./Grammar")
 let Points = require ("./Points")
+let Dist = require ("./Dist")
 let Particles = require ("./particles/ParticleSystem")
 
 let chroma = require ("chroma-js")
@@ -33,7 +34,9 @@ class Scene {
     }
     this.canvas = p5.instance.canvas;
     this.ctx = this.canvas.getContext("2d")
-    this.seed = params.seed ? params.seed : (Math.random() * 10000).toString().substr(5, 8)
+    if (typeof params.seed !== "number" || !Number.isFinite(params.seed))
+      throw ("Chalks: a numeric seed is required, e.g. new Chalks({width, height, seed: 42})")
+    this.seed = params.seed
     debug("using seed=" + this.seed)
     randomSeed(this.seed)
     this.drawBackground(this.width, this.height, style)
@@ -49,6 +52,7 @@ class Scene {
     this.Parametrics = Parametrics
     this.Grammar = Grammar
     this.Points = Points
+    this.Dist = Dist
     this.Particles = Particles
   }
 

@@ -123,14 +123,63 @@ describe("Path", () => {
     assert.strictEqual(p.instrs.slice(1).length, 1)
   })
 
-  it("clone() deep-copies instructions and style, and drops `hide`", () => {
+  it("clone() copies instructions and style, and drops `hide`", () => {
     let {ctx} = fakeScene()
     let original = new Path({ctx}, {fill: "red", hide: true}).m(1, 1)
     let cloned = original.clone()
     assert.deepStrictEqual(cloned.instrs, original.instrs)
-    assert.notStrictEqual(cloned.instrs, original.instrs)
     assert.strictEqual(cloned.style.fill, "red")
     assert.strictEqual("hide" in cloned.style, false)
+  })
+
+  it("clone() produces an independent path -- transforming one leaves the other alone", () => {
+    let {ctx} = fakeScene()
+    let original = new Path({ctx}).rect({x: 0, y: 0}, 10, 10)
+    let cloned = original.clone()
+    cloned.translate(100, 100)
+    assert.deepStrictEqual(original.instrs, new Path({ctx}).rect({x: 0, y: 0}, 10, 10).instrs)
+    assert.notDeepStrictEqual(cloned.instrs, original.instrs)
+  })
+
+  it("clone() preserves a live gradient fill instead of flattening it", () => {
+    let {ctx} = fakeScene()
+    // Scene.lgrad() returns a CanvasGradient; a JSON-based deep copy would
+    // turn it into a dead {} and silently break the clone's fill.
+    let gradient = {addColorStop() {}, __gradient: true}
+    let cloned = new Path({ctx}, {fill: gradient}).clone()
+    assert.strictEqual(cloned.style.fill, gradient)
+    assert.strictEqual(typeof cloned.style.fill.addColorStop, "function")
+  })
+
+  it("translate() handles arc() paths without corrupting the radius", () => {
+    let {ctx} = fakeScene()
+    let p = new Path({ctx}).arc({x: 0, y: 0}, {x: 10, y: 10}, 5)
+    p.translate(3, 4)
+    let a = p.instrs[0]
+    assert.deepStrictEqual(a.p1, {x: 3, y: 4})
+    assert.deepStrictEqual(a.p2, {x: 13, y: 14})
+    assert.strictEqual(a.r, 5) // radius must NOT be shifted
+  })
+
+  it("center() of an arc() path averages only its points, not its radius", () => {
+    let {ctx} = fakeScene()
+    let c = new Path({ctx}).arc({x: 0, y: 0}, {x: 10, y: 10}, 5).center()
+    assert.strictEqual(c.x, 5)
+    assert.strictEqual(c.y, 5)
+  })
+
+  it("instrs is a read-only snapshot -- mutating it does not affect the path", () => {
+    let {ctx} = fakeScene()
+    let p = new Path({ctx}).m(1, 2)
+    p.instrs[0].p.x = 999
+    assert.strictEqual(p.instrs[0].p.x, 1)
+  })
+
+  it("length reports the instruction count", () => {
+    let {ctx} = fakeScene()
+    assert.strictEqual(new Path({ctx}).length, 0)
+    assert.strictEqual(new Path({ctx}).m(0, 0).l(1, 1).length, 2)
+    assert.strictEqual(new Path({ctx}).circle({x: 0, y: 0}, 5).length, 5) // 1 move + 4 beziers
   })
 
   it("clone() merges in an override style without mutating the original", () => {

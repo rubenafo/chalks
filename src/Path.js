@@ -7,93 +7,177 @@
 
 "use strict"
 
-let Points = require ("./Points")
+// ---------------------------------------------------------------------------
+// Storage
+//
+// A path is held in two flat, growable numeric arrays rather than an array of
+// per-instruction objects:
+//
+//   _ops     one opcode per instruction
+//   _coords  the operands of every instruction, packed end to end
+//
+// Each opcode occupies a fixed number of slots in _coords: its transformable
+// x,y pairs first, then any trailing scalar that must NOT be transformed
+// (only ARCTO has one, its radius).
+//
+// This is what lets translate(), rotate(), center() and draw() walk a path as
+// a tight numeric loop with zero per-point allocation, and lets clone() copy a
+// path with two slice()s instead of a JSON round trip.
+//
+// These are plain arrays, not Float64Array/Uint8Array: V8 stores them unboxed
+// (PACKED_DOUBLE_ELEMENTS / PACKED_SMI_ELEMENTS), giving the same flat memory
+// layout, but they are far cheaper to allocate and grow for the short-lived
+// single-shape paths that dominate real sketches (one per dot in a scatter).
+// Every value pushed is coerced with unary + so the arrays never transition
+// away from the unboxed representation.
+// ---------------------------------------------------------------------------
+
+const MOVE = 0, BEZIER = 1, QUAD = 2, ARCTO = 3
+
+const OP_PAIRS   = [1, 3, 2, 2]  // transformable x,y pairs
+const OP_SCALARS = [0, 0, 0, 1]  // trailing non-positional operands
+const OP_SLOTS   = [2, 6, 4, 5]  // total slots = pairs * 2 + scalars
+const OP_END     = [0, 4, 2, 2]  // slot offset of the instruction's endpoint x
 
 class Path {
 
   constructor (scene, style={}) {
     this.style = style
-    this.instrs = []
     this.parent = scene
     this.ctx = scene.ctx
     this.clippedBy = undefined
+    this._ops = []
+    this._coords = []
+    this._endOff = -1  // _coords index of the current point's x (-1 when empty)
   }
 
-  // Clone an object.
-  // "hide" style parameter is not propagated
+  /**
+   * The path's instructions as plain objects, in the pre-1.x shape
+   * ({instr:"b", c1, c2, p2} and friends). Materialized on each access from
+   * the packed arrays, so it is a read-only snapshot: mutating the returned
+   * objects does not affect the path. Use the builder methods and
+   * translate()/rotate() to modify a path.
+   */
+  get instrs() {
+    const k = this._coords
+    let out = new Array(this._ops.length)
+    let c = 0
+    for (let i = 0; i < this._ops.length; i++) {
+      const op = this._ops[i]
+      switch (op) {
+        case MOVE:
+          out[i] = {instr: "m", p: {x: k[c], y: k[c+1]}}
+          break
+        case BEZIER:
+          out[i] = {instr: "b",
+            c1: {x: k[c],   y: k[c+1]},
+            c2: {x: k[c+2], y: k[c+3]},
+            p2: {x: k[c+4], y: k[c+5]}}
+          break
+        case QUAD:
+          out[i] = {instr: "q", c: {x: k[c], y: k[c+1]}, p: {x: k[c+2], y: k[c+3]}}
+          break
+        case ARCTO:
+          out[i] = {instr: "a",
+            p1: {x: k[c],   y: k[c+1]},
+            p2: {x: k[c+2], y: k[c+3]}, r: k[c+4]}
+          break
+      }
+      c += OP_SLOTS[op]
+    }
+    return out
+  }
+
+  /** Number of instructions in the path. */
+  get length() { return this._ops.length }
+
+  // Records an opcode and where its endpoint will land, then returns the base
+  // index its operands should be written at.
+  _open(op) {
+    this._ops.push(op)
+    const base = this._coords.length
+    this._endOff = base + OP_END[op]
+    return base
+  }
+
+  // Current pen position, i.e. the endpoint of the last instruction.
+  _curX() { return this._endOff < 0 ? 0 : this._coords[this._endOff] }
+  _curY() { return this._endOff < 0 ? 0 : this._coords[this._endOff + 1] }
+
+  _bezierTo(c1x, c1y, c2x, c2y, px, py) {
+    this._open(BEZIER)
+    this._coords.push(+c1x, +c1y, +c2x, +c2y, +px, +py)
+    return this
+  }
+
+  // Clone a path.
+  // "hide" style parameter is not propagated.
+  // The style is copied shallowly on purpose: it may hold a live CanvasGradient
+  // (from Scene.lgrad/rgrad), which a deep copy would flatten into a dead {}.
   clone(style={}) {
-    let newStyle = JSON.parse(JSON.stringify(this.style))
-    Object.keys(style).forEach(k => newStyle[k] = style[k])
+    let newStyle = Object.assign({}, this.style, style)
+    delete newStyle.hide
     let newPath = new Path(this.parent, newStyle)
-    delete(newPath.style.hide)
-    newPath.instrs = JSON.parse(JSON.stringify(this.instrs))
+    newPath._ops = this._ops.slice()
+    newPath._coords = this._coords.slice()
+    newPath._endOff = this._endOff
     return newPath
   }
 
   m(x,y) {
-    let point = typeof(x) === "object" ? {x:x.x, y:x.y} : {x:x, y:y}
-    this.instrs.push({instr:"m", p:point}); return this
-  }
-
-  // Returns the endpoint of the last instruction, i.e. the path's current pen position.
-  _lastPoint() {
-    if (!this.instrs.length) return {x:0, y:0}
-    let last = this.instrs[this.instrs.length - 1]
-    switch (last.instr) {
-      case "m": case "l": case "q": return last.p
-      case "b": case "a": return last.p2
-      case "arc": return {x: last.p.x + last.r * Math.cos(last.ea), y: last.p.y + last.r * Math.sin(last.ea)}
-      default: return {x:0, y:0}
-    }
+    const px = typeof(x) === "object" ? x.x : x
+    const py = typeof(x) === "object" ? x.y : y
+    this._open(MOVE)
+    this._coords.push(+px, +py)
+    return this
   }
 
   // A straight line, expressed as a cubic bezier whose control points sit on
   // the line itself (at 1/3 and 2/3), so it renders identically to lineTo().
   l(x,y) {
-    let point = typeof(x) === "object" ? {x:x.x, y:x.y} : {x:x, y:y}
-    let from = this._lastPoint()
-    let dx = point.x - from.x, dy = point.y - from.y
-    this.instrs.push({instr:"b",
-      c1: {x: from.x + dx/3, y: from.y + dy/3},
-      c2: {x: from.x + dx*2/3, y: from.y + dy*2/3},
-      p2: point})
-    return this
+    const px = typeof(x) === "object" ? x.x : x
+    const py = typeof(x) === "object" ? x.y : y
+    const fx = this._curX(), fy = this._curY()
+    const dx = px - fx, dy = py - fy
+    return this._bezierTo(fx + dx/3, fy + dy/3, fx + dx*2/3, fy + dy*2/3, px, py)
   }
 
   bezier(c1, c2, p2) {
-      this.instrs.push({instr:"b",
-        c1:{x:c1.x, y:c1.y, z:c1.z}, c2:{x:c2.x, y:c2.y, z:c2.z}, p2:{x:p2.x, y:p2.y, z:p2.z}});
-      return this
+    return this._bezierTo(c1.x, c1.y, c2.x, c2.y, p2.x, p2.y)
   }
+
   bc (p) {
-    let previous = this.instrs[this.instrs.length-1]
-    if (previous.instr !== "b")
+    if (this._ops.length === 0 || this._ops[this._ops.length-1] !== BEZIER)
       throw ("Previous instruction to bc() must be bezier()")
-    this.bezier(Object.assign({}, previous.c1), Object.assign({}, previous.c2), p)
-    return this
+    const prev = this._coords.length - OP_SLOTS[BEZIER]
+    const k = this._coords
+    return this._bezierTo(k[prev], k[prev+1], k[prev+2], k[prev+3], p.x, p.y)
   }
+
   arc(p1, p2, r) {
-    this.instrs.push({instr:"a",
-      p1:{x:p1.x, y:p1.y, z:p1.z}, p2:{x:p2.x, y:p2.y, z:p2.z}, r:r})
+    this._open(ARCTO)
+    this._coords.push(+p1.x, +p1.y, +p2.x, +p2.y, +r)
     return this
   }
+
   quad(c, p) {
-    this.instrs.push({instr:"q", c:{x:c.x, y:c.y, z:c.z}, p:{x:p.x, y:p.y, z:p.z}})
+    this._open(QUAD)
+    this._coords.push(+c.x, +c.y, +p.x, +p.y)
     return this
   }
 
   center() {
-    let pts = 0;
-    let centerPt = createVector(0,0)
-    this.instrs.forEach (i => {
-      Object.keys(i).filter(k => k !== "instr").forEach (k => {
-          centerPt.add(i[k].x, i[k].y)
-      })
-      pts += Object.keys(i).length -1
-    })
-    if (pts)
-      centerPt.div(pts)
-    return centerPt;
+    const k = this._coords, ops = this._ops, n = ops.length
+    let sx = 0, sy = 0, pts = 0, c = 0
+    for (let i = 0; i < n; i++) {
+      const op = ops[i]
+      for (let pair = OP_PAIRS[op]; pair > 0; pair--) {
+        sx += k[c]; sy += k[c+1]
+        c += 2; pts++
+      }
+      c += OP_SCALARS[op]
+    }
+    return pts ? createVector(sx / pts, sy / pts) : createVector(0, 0)
   }
 
   shadow(blur=0, color="black", alpha=1, x=5, y=5) {
@@ -107,15 +191,18 @@ class Path {
 
   // Shifts every point in the path by a relative (dx,dy) offset.
   translate(dx, dy) {
-    let delta = typeof(dx) === "object" ? {x:dx.x, y:dx.y} : {x:dx, y:dy}
-    this.instrs.forEach (i => {
-      Object.keys(i).forEach (k => {
-        if (k !== "instr") {
-          i[k].x += delta.x
-          i[k].y += delta.y
-        }
-      })
-    })
+    const ax = typeof(dx) === "object" ? dx.x : dx
+    const ay = typeof(dx) === "object" ? dx.y : dy
+    const k = this._coords, ops = this._ops, n = ops.length
+    let c = 0
+    for (let i = 0; i < n; i++) {
+      const op = ops[i]
+      for (let pair = OP_PAIRS[op]; pair > 0; pair--) {
+        k[c] += ax; k[c+1] += ay
+        c += 2
+      }
+      c += OP_SCALARS[op]
+    }
     return this
   }
 
@@ -126,40 +213,60 @@ class Path {
     return this.translate(p.x - center.x, p.y - center.y)
   }
 
+  // Rotates the path `deg` degrees around `pt` (the path's center by default).
+  // sin/cos are evaluated once for the whole path rather than per point.
   rotate (deg, pt) {
-    pt = pt || this.center()
-    this.instrs.forEach (instr => {
-      Object.keys(instr).forEach(k => {
-        if ( k !== "instr")
-          instr[k] = Points.rotatePoint(instr[k], deg, pt)
-      })
-    })
+    const pivot = pt || this.center()
+    const radians = deg * Math.PI / 180.0
+    const cos = Math.cos(radians), sin = Math.sin(radians)
+    const px = pivot.x, py = pivot.y
+    const k = this._coords, ops = this._ops, n = ops.length
+    let c = 0
+    for (let i = 0; i < n; i++) {
+      const op = ops[i]
+      for (let pair = OP_PAIRS[op]; pair > 0; pair--) {
+        const dx = k[c] - px, dy = k[c+1] - py
+        k[c]   = cos * dx - sin * dy + px
+        k[c+1] = sin * dx + cos * dy + py
+        c += 2
+      }
+      c += OP_SCALARS[op]
+    }
     return this
   }
 
   draw (scale=1) {
-    this.ctx.save()
+    const ctx = this.ctx
+    ctx.save()
     if (this.clippedBy) {
       let region = new Path2D();
       region.rect(this.clippedBy.x, this.clippedBy.y, this.clippedBy.w, this.clippedBy.h)
-      this.ctx.clip(region)
+      ctx.clip(region)
     }
     if (this.style.filter) {
-      this.ctx.filter = this.style.filter
+      ctx.filter = this.style.filter
     }
-    this.ctx.beginPath()
-    this.instrs.forEach (instr => {
-       switch (instr.instr) {
-         case "m": this.ctx.moveTo(instr.p.x*scale, instr.p.y*scale); break
-         case "l": this.ctx.lineTo(instr.p.x*scale, instr.p.y*scale); break
-         case "b": this.ctx.bezierCurveTo(instr.c1.x*scale, instr.c1.y*scale,
-                                               instr.c2.x*scale, instr.c2.y*scale,
-                                               instr.p2.x*scale, instr.p2.y*scale); break
-         case "a": this.ctx.arcTo(instr.p1.x*scale, instr.p1.y*scale, instr.p2.x*scale, instr.p2.y*scale, instr.r); break
-         case "q": this.ctx.quadraticCurveTo(instr.c.x*scale, instr.c.y*scale, instr.p.x*scale, instr.p.y*scale); break
-         case "arc": this.ctx.arc(instr.p.x*scale, instr.p.y*scale, instr.r, instr.sa, instr.ea, instr.cw); break
-       }
-    })
+    ctx.beginPath()
+    const k = this._coords, ops = this._ops, n = ops.length
+    let c = 0
+    for (let i = 0; i < n; i++) {
+      switch (ops[i]) {
+        case MOVE:
+          ctx.moveTo(k[c]*scale, k[c+1]*scale)
+          c += 2; break
+        case BEZIER:
+          ctx.bezierCurveTo(k[c]*scale, k[c+1]*scale,
+                            k[c+2]*scale, k[c+3]*scale,
+                            k[c+4]*scale, k[c+5]*scale)
+          c += 6; break
+        case QUAD:
+          ctx.quadraticCurveTo(k[c]*scale, k[c+1]*scale, k[c+2]*scale, k[c+3]*scale)
+          c += 4; break
+        case ARCTO:
+          ctx.arcTo(k[c]*scale, k[c+1]*scale, k[c+2]*scale, k[c+3]*scale, k[c+4])
+          c += 5; break
+      }
+    }
     this._applyStyle()
     return this
    }
@@ -210,21 +317,21 @@ class Path {
    // Direction always sweeps from sa to ea in increasing-angle order; `cw`
    // is accepted for signature compatibility but does not reverse the sweep.
    circle(p, r=10, sa=0, ea=Math.PI * 2, cw=true) {
-     let span = ea - sa
-     let segments = Math.max(1, Math.ceil(Math.abs(span) / (Math.PI / 2)))
-     let step = span / segments
-     let kappa = (4 / 3) * Math.tan(step / 4)
-     let start = {x: p.x + r * Math.cos(sa), y: p.y + r * Math.sin(sa)}
-     this.instrs.push({instr:"m", p:start})
+     const span = ea - sa
+     const segments = Math.max(1, Math.ceil(Math.abs(span) / (Math.PI / 2)))
+     const step = span / segments
+     const kappa = (4 / 3) * Math.tan(step / 4)
+     this.m(p.x + r * Math.cos(sa), p.y + r * Math.sin(sa))
      for (let i = 0; i < segments; i++) {
-       let a0 = sa + i * step
-       let a1 = sa + (i + 1) * step
-       let p0 = {x: p.x + r * Math.cos(a0), y: p.y + r * Math.sin(a0)}
-       let p1 = {x: p.x + r * Math.cos(a1), y: p.y + r * Math.sin(a1)}
-       this.instrs.push({instr:"b",
-         c1: {x: p0.x - kappa * r * Math.sin(a0), y: p0.y + kappa * r * Math.cos(a0)},
-         c2: {x: p1.x + kappa * r * Math.sin(a1), y: p1.y - kappa * r * Math.cos(a1)},
-         p2: p1})
+       const a0 = sa + i * step
+       const a1 = sa + (i + 1) * step
+       const cos0 = Math.cos(a0), sin0 = Math.sin(a0)
+       const cos1 = Math.cos(a1), sin1 = Math.sin(a1)
+       const p0x = p.x + r * cos0, p0y = p.y + r * sin0
+       const p1x = p.x + r * cos1, p1y = p.y + r * sin1
+       this._bezierTo(p0x - kappa * r * sin0, p0y + kappa * r * cos0,
+                      p1x + kappa * r * sin1, p1y - kappa * r * cos1,
+                      p1x, p1y)
      }
      return this
    }
