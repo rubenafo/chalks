@@ -1,13 +1,18 @@
 {
   "name": "chalks",
-  "version": "0.5.0",
+  "version": "1.1.0",
   "description": "A set of utility methods and classes on top of p5js",
   "main": "dist/chalks.min.js",
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "test": "mocha test/",
     "start": "node server.js",
     "build": "node scripts/build.mjs",
-    "docs": "rm -Rf docs/api && node ./node_modules/jsdoc/jsdoc.js ./dist/chalks.dev.js -d docs/api"
+    "docs": "rm -Rf docs/api && node ./node_modules/jsdoc/jsdoc.js ./dist/chalks.dev.js -d docs/api",
+    "prepublishOnly": "npm test && npm run build"
   },
   "repository": {
     "type": "git",

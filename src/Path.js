@@ -35,9 +35,29 @@ class Path {
     this.instrs.push({instr:"m", p:point}); return this
   }
 
+  // Returns the endpoint of the last instruction, i.e. the path's current pen position.
+  _lastPoint() {
+    if (!this.instrs.length) return {x:0, y:0}
+    let last = this.instrs[this.instrs.length - 1]
+    switch (last.instr) {
+      case "m": case "l": case "q": return last.p
+      case "b": case "a": return last.p2
+      case "arc": return {x: last.p.x + last.r * Math.cos(last.ea), y: last.p.y + last.r * Math.sin(last.ea)}
+      default: return {x:0, y:0}
+    }
+  }
+
+  // A straight line, expressed as a cubic bezier whose control points sit on
+  // the line itself (at 1/3 and 2/3), so it renders identically to lineTo().
   l(x,y) {
     let point = typeof(x) === "object" ? {x:x.x, y:x.y} : {x:x, y:y}
-    this.instrs.push({instr:"l", p:point}); return this
+    let from = this._lastPoint()
+    let dx = point.x - from.x, dy = point.y - from.y
+    this.instrs.push({instr:"b",
+      c1: {x: from.x + dx/3, y: from.y + dy/3},
+      c2: {x: from.x + dx*2/3, y: from.y + dy*2/3},
+      p2: point})
+    return this
   }
 
   bezier(c1, c2, p2) {
@@ -85,19 +105,25 @@ class Path {
     return this
   }
 
-  moveTo(p0,y) {
-    let p = typeof(p0) === "object" ? p0 : {x:p0, y:y}
-    let center = this.center()
-    let distance = {x: p.x - center.x, y: p.y - center.y}
+  // Shifts every point in the path by a relative (dx,dy) offset.
+  translate(dx, dy) {
+    let delta = typeof(dx) === "object" ? {x:dx.x, y:dx.y} : {x:dx, y:dy}
     this.instrs.forEach (i => {
       Object.keys(i).forEach (k => {
         if (k !== "instr") {
-          i[k].x += distance.x
-          i[k].y += distance.y
+          i[k].x += delta.x
+          i[k].y += delta.y
         }
       })
     })
     return this
+  }
+
+  // Moves the path so its center lands on the given absolute point.
+  moveTo(p0,y) {
+    let p = typeof(p0) === "object" ? p0 : {x:p0, y:y}
+    let center = this.center()
+    return this.translate(p.x - center.x, p.y - center.y)
   }
 
   rotate (deg, pt) {
@@ -179,8 +205,27 @@ class Path {
      return this
    }
 
+   // Approximates the arc from sa to ea with cubic bezier segments (<=90deg
+   // each, the standard bezier-circle technique), instead of ctx.arc().
+   // Direction always sweeps from sa to ea in increasing-angle order; `cw`
+   // is accepted for signature compatibility but does not reverse the sweep.
    circle(p, r=10, sa=0, ea=Math.PI * 2, cw=true) {
-     this.instrs.push({instr:"arc", p:p, r:r, sa:sa, ea:ea, cw:cw})
+     let span = ea - sa
+     let segments = Math.max(1, Math.ceil(Math.abs(span) / (Math.PI / 2)))
+     let step = span / segments
+     let kappa = (4 / 3) * Math.tan(step / 4)
+     let start = {x: p.x + r * Math.cos(sa), y: p.y + r * Math.sin(sa)}
+     this.instrs.push({instr:"m", p:start})
+     for (let i = 0; i < segments; i++) {
+       let a0 = sa + i * step
+       let a1 = sa + (i + 1) * step
+       let p0 = {x: p.x + r * Math.cos(a0), y: p.y + r * Math.sin(a0)}
+       let p1 = {x: p.x + r * Math.cos(a1), y: p.y + r * Math.sin(a1)}
+       this.instrs.push({instr:"b",
+         c1: {x: p0.x - kappa * r * Math.sin(a0), y: p0.y + kappa * r * Math.cos(a0)},
+         c2: {x: p1.x + kappa * r * Math.sin(a1), y: p1.y - kappa * r * Math.cos(a1)},
+         p2: p1})
+     }
      return this
    }
 

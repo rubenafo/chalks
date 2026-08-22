@@ -1,8 +1,11 @@
 # Chalks
 [![CI](https://github.com/rubenafo/chalks/actions/workflows/ci.yml/badge.svg)](https://github.com/rubenafo/chalks/actions/workflows/ci.yml)
+[![Demo](https://img.shields.io/badge/demo-live-66fcf1)](https://rubenafo.github.io/chalks/)
 
 A thin, independent library on top of p5js containing methods to manipulate points and draw figures.   
 Chalks is fully compatible with p5js and just provides some handy tools to simplify the creation process by accessing the p5js _canvas2d_ object.
+
+**[Live demo gallery](https://rubenafo.github.io/chalks/)** &mdash; every capability below, running live in the browser, with source shown alongside each one.
 
 Some of the components:
 * Simplified path object to define styles and curves in a functional, declarative way.
@@ -24,6 +27,8 @@ Some of the components:
 ```
 npm i chalks
 ```
+Chalks is a browser library: it's loaded as a plain `<script>` tag, after p5.js, and works in p5's _global mode_ (bare functions like `createVector`/`random`, a global `setup()`/`draw()`). It is **not** a `require()`/`import`-able module -- `npm i chalks` is only there to fetch the file, not to bundle it into a webpack/vite/Node build. The pattern below is the one to follow, and it's exactly what every sketch in the [live demo gallery](https://rubenafo.github.io/chalks/) uses.
+
 Keep in mind that _chalks_ requires [p5js](https://www.npmjs.com/package/p5) to be present.   
 You can reference the _chalks.min.js_ library contained in the node_modules folder in your index.html:
 ```html
