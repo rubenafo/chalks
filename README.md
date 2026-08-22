@@ -18,16 +18,16 @@ Some of the components:
     * Dejon
     * Voronoi points (thanks to [voronoi](https://npmjs.com/package/voronoi))
 * Points manipulation (subdivide, subchunks)
-* Layout functions: column, rows, masonry
+* Layout functions: columns, rows, masonry
 * Grammars
-* Color handling using [Chromajs](https://www.npmjs.com/package/chroma-js)
+* Color handling using [Chroma.js](https://www.npmjs.com/package/chroma-js)
 * Particle System: integrates [node-particles](https://github.com/rubenafo/node-particles)
  
 ## Installation
 ```
 npm i chalks
 ```
-Chalks is a browser library: it's loaded as a plain `<script>` tag, after p5.js, and works in p5's _global mode_ (bare functions like `createVector`/`random`, a global `setup()`/`draw()`). It is **not** a `require()`/`import`-able module -- `npm i chalks` is only there to fetch the file, not to bundle it into a webpack/vite/Node build. The pattern below is the one to follow, and it's exactly what every sketch in the [live demo gallery](https://rubenafo.github.io/chalks/) uses.
+Chalks is a browser library: it's loaded as a plain `<script>` tag, after p5.js, and works in p5's _global mode_ (bare functions like `createVector`/`random`, a global `setup()`/`draw()`). It is **not** a `require()`/`import`-able module &mdash; `npm i chalks` is only there to fetch the file, not to bundle it into a webpack/vite/Node build. The pattern below is the one to follow, and it's exactly what every sketch in the [live demo gallery](https://rubenafo.github.io/chalks/) uses.
 
 Keep in mind that _chalks_ requires [p5js](https://www.npmjs.com/package/p5) to be present.   
 You can reference the _chalks.min.js_ library contained in the node_modules folder in your index.html:
@@ -36,8 +36,7 @@ You can reference the _chalks.min.js_ library contained in the node_modules fold
 <script language="javascript" src="./node_modules/chalks/dist/chalks.min.js" type="text/javascript"></script>
 <script language="javascript" src="_your_sketch_.js" type="text/javascript"></script>
 ```
-Alternatively you can simply clone this repo and add _chalks.min.js_, e.g.   
-Copy the file _chalks.min.js_ from /dist and add it to your _index.html_ after your p5js import.
+Alternatively, you can simply clone this repo and add _chalks.min.js_ &mdash; copy the file from /dist and add it to your _index.html_ after your p5js import.
 
 Example:   
 ```html
@@ -69,4 +68,4 @@ npm run build   # bundles src/ into dist/chalks.dev.js and dist/chalks.min.js
 npm test        # runs the mocha test suite
 npm start       # serves index.html + sketch.js on http://localhost:9090
 ```
-`npm start` looks for a local `sketch.js` in the repo root (gitignored) to render against `dist/chalks.dev.js` and the vendored p5.js in `lib/`. Pass a different sketch file as an argument, e.g. `node server.js my-sketch.js`.
+`npm start` looks for a local `sketch.js` in the repo root (gitignored) to render against `dist/chalks.dev.js` and the vendored p5.js in `lib/`. Pass a different sketch file as an argument, e.g., `node server.js my-sketch.js`.
